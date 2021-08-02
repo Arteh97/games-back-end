@@ -25,12 +25,11 @@ const seed = async ({ categoryData, commentData, reviewData, userData } ) => {
   })
   await insertComments(newCommentData);
 
-  return db.query('SELECT comments.review_id FROM comments LEFT JOIN reviews on reviews.review_id = comments.review_id GROUP BY comments.review_id;').then(() => {
-    return  db.query('SELECT reviews.* , COUNT(comments.review_id) AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id GROUP BY reviews.review_id;').then((results) => {
+  return db.query('SELECT comments.review_id FROM comments LEFT JOIN reviews on reviews.review_id = comments.review_id GROUP BY comments.review_id').then(() => {
+    return  db.query('SELECT reviews.*, COUNT(comments.review_id) AS comment_count FROM reviews LEFT JOIN comments ON reviews.review_id = comments.review_id WHERE reviews.review_id = 2 GROUP BY reviews.review_id;').then((results) => {
       console.log(results.rows[0]);
     })
   });
-
 };
 
 

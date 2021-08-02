@@ -54,3 +54,16 @@ test('status: 200 - responds with an array of the newly inserted review objects'
         }); 
     })
 })
+
+
+// describe('Interacting with the reviews', () => {
+//     test('status: 200 - responds with a review, with a comment_count column added to it ', () => {
+//         return request(app)
+//         .get('/api/reviews/:id')
+//         .expect(200)
+//         .then((response) => {
+//             expect(response.body).toEqual
+//         })
+        
+//     });
+// })
