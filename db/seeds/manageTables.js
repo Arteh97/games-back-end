@@ -35,11 +35,11 @@ const createTables = async () => {
 
     await db.query(`CREATE TABLE comments
     (comment_id SERIAL PRIMARY KEY,
-    author VARCHAR(200) REFERENCES users(username) ON DELETE CASCADE,
-    review_id INT REFERENCES reviews(review_id),
-    votes INT DEFAULT 0,
-    created_at TIMESTAMP,
-    body TEXT NOT NULL);`)
+        author VARCHAR(200) REFERENCES users(username) ON DELETE CASCADE,
+        created_at TIMESTAMP,
+        body TEXT NOT NULL,
+        votes INT DEFAULT 0,
+        review_id INT REFERENCES reviews(review_id));`)
 
 }
 
@@ -88,3 +88,6 @@ const insertComments = async (newCommentData) => {
 }
 
 module.exports = { dropTables, createTables, insertCategories, insertUsers, insertReviews, insertComments };
+
+
+// SELECT reviews, comments
