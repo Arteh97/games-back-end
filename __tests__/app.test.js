@@ -23,7 +23,7 @@ describe('status: 200 - all OK from api router', () => {
     .get('/api/categories')
     .expect(200)
     .then((res) => {
-        console.log(res.body[0], '<-- first entry', res.body.length, '<-- array length');
+        // console.log(res.body[0], '<-- first entry', res.body.length, '<-- array length');
         expect(res.body).toHaveLength(4);
         res.body.forEach((category) => {
             expect(category).toMatchObject({
@@ -38,7 +38,7 @@ test('status: 200 - responds with an array of the newly inserted review objects'
     .get('/api/reviews')
     .expect(200)
     .then((res) => {
-        console.log(res.body.length, '<-- array length', res.body[0], '<-- first entry');
+        // console.log(res.body.length, '<-- array length', res.body[0], '<-- first entry');
         expect(res.body).toHaveLength(13);
         res.body.forEach((review) => {
             expect(review).toMatchObject({
@@ -55,15 +55,25 @@ test('status: 200 - responds with an array of the newly inserted review objects'
     })
 })
 
+describe('Interacting with the reviews', () => {
+    test('status: 200 - responds with the searched review, with a comment_count column added to it ', () => {
+        const input = 3
+        return request(app)
+        .get(`/api/reviews/${input}`)
+        .expect(200)
+        .then((response) => {
+            expect(response.body).toMatchObject({
+                title: expect.any(String),
+                designer: expect.any(String),
+                owner: expect.any(String),
+                review_img_url: expect.any(String),
+                review_body: expect.any(String),
+                category: expect.any(String),
+                votes: expect.any(Number),
+                comment_count: expect.any(String), // shouldn't be a string, will come back to this.
 
-// describe('Interacting with the reviews', () => {
-//     test('status: 200 - responds with a review, with a comment_count column added to it ', () => {
-//         return request(app)
-//         .get('/api/reviews/:id')
-//         .expect(200)
-//         .then((response) => {
-//             expect(response.body).toEqual
-//         })
+            })
+        })
         
-//     });
-// })
+    });
+})
