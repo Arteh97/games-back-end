@@ -8,8 +8,7 @@ beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
 
-describe('status: 200 - all OK from api router', () => {
-    console.log('1st Test')
+describe('GET - status: 200 - router and table creation + inserts', () => {
     test('should respond with "all OK from the api router', () => {
         return request(app)
         .get('/api')
@@ -18,7 +17,7 @@ describe('status: 200 - all OK from api router', () => {
             expect(response.body).toEqual({ "msg": 'All OK from /api !' })
         })
     });
-    test('status: 200 - responds with an array the newly inserted category objects', () => {
+    test('GET - status: 200 - responds with an array the newly inserted category objects', () => {
     return request(app)
     .get('/api/categories')
     .expect(200)
@@ -33,7 +32,7 @@ describe('status: 200 - all OK from api router', () => {
         })
     })
 });
-test('status: 200 - responds with an array of the newly inserted review objects', () => {
+test('GET - status: 200 - responds with an array of the newly inserted review objects', () => {
     return request(app)
     .get('/api/reviews')
     .expect(200)
@@ -56,10 +55,10 @@ test('status: 200 - responds with an array of the newly inserted review objects'
 })
 
 describe('Interacting with the reviews', () => {
-    test('status: 200 - responds with the searched review, with a comment_count column added to it ', () => {
-        const input = 3
+    test('GET - status: 200 - responds with the searched review, with a comment_count column added to it ', () => {
+        const num = 3
         return request(app)
-        .get(`/api/reviews/${input}`)
+        .get(`/api/reviews/${num}`)
         .expect(200)
         .then((response) => {
             expect(response.body).toMatchObject({
@@ -74,6 +73,9 @@ describe('Interacting with the reviews', () => {
 
             })
         })
+        
+    });
+    test(' ', () => {
         
     });
 })
