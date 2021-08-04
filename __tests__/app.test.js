@@ -1,5 +1,5 @@
-const request = require('supertest');
 const app = require('../app');
+const request = require('supertest');
 const db = require('../db/connection.js');
 const { copyWithin } = require('../db/data/test-data/categories');
 const testData = require('../db/data/test-data/index.js');
@@ -303,20 +303,23 @@ describe('/api/reviews/:review_id/comments', () => {
                 expect(comments).toBeSortedBy('comment_id', { ascending: true });
             });
         });
-    });
-    test('ERROR - status: 400, responds with "Invalid sort query" if given a non-valid column', () => {
-        return request(app)
-        .get('/api/reviews/10/comments?sort_by=address')
-        .expect(400)
-        .then((error) => {
-            expect(error.body).toEqual({ msg: "Invalid sort query"});
+        test('ERROR - status: 400, responds with "Invalid sort query" if given a non-valid column', () => {
+            return request(app)
+            .get('/api/reviews/10/comments?sort_by=address')
+            .expect(400)
+            .then((error) => {
+                expect(error.body).toEqual({ msg: "Invalid sort query"});
+            })
+        });
+        test('ERROR - status: 400, responds with "Invalid order query" if given a non-valid order data-type', () => {
+            return request(app)
+            .get('/api/reviews/:review_id/comments?sort_by=votes&order=not-valid')
+            .expect(400)
+            .then((error) => {
+                expect(error.body).toEqual({ msg: "Invalid order query" });
+            });
+        });
+        test('POST - status: 201, responds with the newly posted comment', () => {
+            
         })
     });
-    test('ERROR - status: 400, responds with "Invalid order query" if given a non-valid order data-type', () => {
-        return request(app)
-        .get('/api/reviews/:review_id/comments?sort_by=votes&order=not-valid')
-        .expect(400)
-        .then((error) => {
-            expect(error.body).toEqual({ msg: "Invalid order query" });
-        });
-});

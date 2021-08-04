@@ -35,5 +35,4 @@ const lowerCaseOrder = order.toLowerCase();
     : Promise.reject({ status: 400, msg: 'Invalid order query' });
 };
 
-
 module.exports = { formatData, createRefObj, checkSort, checkOrder };
