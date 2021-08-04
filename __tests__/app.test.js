@@ -62,6 +62,8 @@ describe('/api, table seeding and invalid path handling', () => {
 });
 // all tests passing!
 
+// Happy Path then Sad Path
+
 // error handling for - a review that doesn't exist, invalid syntax etc...
 describe.only('/api/reviews', () => {
     test('GET - status: 200 - responds with the searched review, with a comment_count column added to it ', () => {
@@ -80,19 +82,20 @@ describe.only('/api/reviews', () => {
                     review_body: "We couldn't find the werewolf!",
                     category: 'social deduction',
                     created_at: expect.any(String),
-                    votes: 5
+                    votes: 5,
+                    comment_count: expect.any(String),
                 })
             })       
     }); 
-    test('GET - status: 404 - responds with "Review not found" if given a review_id that is not in the database', () => {
+    test('ERROR - status: 404 - responds with "Review not found" if given a review_id that is not in the database', () => {
         return request(app)
         .get('/api/reviews/10000')
         .expect(404)
         .then((error) => {
-            expect(error.body).toEqual({ msg: "Review Not Found" });
+            expect(error.body).toEqual({ msg: "Review not found" });
         });
     });
-    test('GET - status: 400 - responds with "bad request" when passed an incorrect data type', () => {
+    test('ERROR - status: 400 - responds with "Bad Request" when passed an incorrect data type', () => {
         return request(app)
         .get('/api/reviews/incorrect')
         .expect(400)
@@ -100,24 +103,151 @@ describe.only('/api/reviews', () => {
             expect(error.body).toEqual({ msg: "Bad Request" });
         });
     });
+    test('PATCH - status 201 - responds with a review after its vote count has been updated', () => {
+        return request.agent(app)
+        .patch('/api/reviews/1')
+        .send({ inc_votes: -1})
+        .expect(201)
+        .then((response) => {
+            expect(response.body).toMatchObject({
+                review_id: 1,
+                title: 'Agricola',
+                designer: 'Uwe Rosenberg',
+                owner: 'mallionaire',
+                review_img_url:
+                  'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+                review_body: 'Farmyard fun!',
+                category: 'euro game',
+                created_at: expect.any(String),
+                votes: 0
+            })
 
+        })
+    });
+    test('ERROR - status 404 - responds with "Review not found" if given a review_id that is not in the database', () => {
+        return request.agent(app)
+        .patch('/api/reviews/10000')
+        .send({ inc_votes: 1 })
+        .expect(404)
+        .then((error) => {
+            expect(error.body).toEqual({ msg: "Review not found"});
+        })
+    })
+    test('ERROR - status 400 - responds with "Bad Request" when passed an incorrect inc_vote data type', () => {
+        return request.agent(app)
+        .patch('/api/reviews/:review_id')
+        .send({ inc_votes : 'incorrect' })
+        .expect(400)
+        .then((error) => {
+            expect(error.body).toEqual({ msg: "Bad Request"});
+        })
+    })
+    test('GET - status: 200 - responds with an array of review objects', () => {
+        // should accept queries sort_by, order, category
+        // error handle for if any of the query is invalid
+        return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then((response) => {
+            // console.log(response.body)
+            expect(response.body.reviews.length).toEqual(13);
+        })
+    });
+    test('GET - status: 200, responds with reviews sorted by "created_at" descending (default)', () => {
+        return request(app)
+        .get('/api/reviews?')
+        .expect(200)
+        .then(({ body: { reviews }}) => {
+            const copy = [...reviews]
+            const sorted = copy.sort(function(obj1, obj2) {
+                return obj1.created_at - obj2.created_at;
+            });
+            expect(reviews).toEqual(sorted);
+            expect(reviews).not.toBe(sorted);
+        });
+        
+    });
+    test('GET - status: 200, responsed with reviews sorted by "created_at ascending" ', () => {
+        return request(app)
+        .get('/api/reviews?order=asc')
+        .expect(200)
+        .then(({ body: { reviews }}) => {
+            const copy = [...reviews]
+            const sorted = copy.sort(function(obj1, obj2) {
+                return obj2.created_at - obj1.created_at;
+            });
+            expect(reviews).toEqual(sorted);
+            expect(reviews).not.toBe(sorted);
+        });
+    });
+    test('GET - status:  200, responds with reviews sorted by votes descending', () => {
+        return request(app)
+        .get('/api/reviews?sort_by=votes')
+        .expect(200)
+        .then(({ body: { reviews }}) => {
+            const copy = [...reviews]
+            const sorted = copy.sort(function(obj1, obj2) {
+                return obj2.votes - obj1.votes;
+            });
+            // console.log(sorted);
+            expect(reviews).toEqual(sorted);
+            expect(reviews).not.toBe(sorted);
+            });
+        });
+        test('GET - status: 200, responds with reviews sorted by votes ascending', () => {
+            return request(app)
+            .get('/api/reviews?sort_by=votes&&order=asc')
+            .expect(200)
+            .then(({ body: { reviews }}) => {
+            const copy = [...reviews]
+            const sorted = copy.sort(function(obj1, obj2) {
+                return obj1.votes - obj2.votes;
+            });
+            // console.log(sorted);
+            expect(reviews).toEqual(sorted);
+            expect(reviews).not.toBe(sorted);
+            });
+        });
+        test('GET - status: 200 - responds with the reviews filtered by category', () => {
+            return request(app)
+            .get('/api/reviews?category=dexterity')
+            .expect(200)
+            .then(({ body: { reviews }}) => {
+                reviews.forEach((review) => {
+                    expect(review.category).toBe('dexterity');
+                });
+            });
+        });
 
-    // test('PATCH - status 201 - responds with a review after its vote count has been updated', () => {
-    //     return request.agent(app)
-    //     .patch('/api/reviews/:review_id')
-    //     .expect(201)
-    //     .then((response) => {
-    //         expect(response.body).toMatchObject({
-    //             review_id: expect.any(Number),
-    //             title: expect.any(String),
-    //             designer: expect.any(String),
-    //             owner: expect.any(String),
-    //             review_img_url: expect.any(String),
-    //             review_body: expect.any(String),
-    //             category: expect.any(String),
-    //             votes: expect.any(Number),
-    //         })
+        test('GET - status: 200, responds with the reviews owner by a specific owner', () => {
+            return request(app)
+            .get('/api/reviews?owner=bainesface')
+            .expect(200)
+            .then(({ body: {reviews} }) => {
+                reviews.forEach((review) => {
+                    expect(review.owner).toEqual('bainesface');
+                });
+            });
+        });
+        test('ERROR - status 400, responds with "Invalid sort_by query" when provided a non-valid column', () => {
+            return request(app)
+            .get('/api/reviews?sort_by=northcoders')
+            .expect(400)
+            .then(({body: { msg }}) => {
+                expect(msg).toBe("Invalid sort_by query");
+            });
+        });
+        test('ERROR - status 400, responds with ', () => {
+            return request(app)
+            .get('api/reviews?sort_by=votes&order=incorrect')
+            .expect(404)
+            .then(({ body: { msg }}) => {
+                console.log(msg);
+                expect(msg).toBe("Invalid order query");
+            });
+        });
+        // test('should ', () => {
+            
+        // });
 
-    //     })
-    // });
-})
+    });

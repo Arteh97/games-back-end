@@ -5,7 +5,7 @@ reviewRouter.get('/', getReviews);
 
 reviewRouter.get('/:review_id', getReviewById);
 
-reviewRouter.patch('/:id', updateReview)
+reviewRouter.patch('/:review_id', updateReview)
 
 
 module.exports = reviewRouter;

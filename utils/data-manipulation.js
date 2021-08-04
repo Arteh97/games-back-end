@@ -22,6 +22,16 @@ const formatData = (arrOfObjs) => {
     return result;
 }
 
+const checkSort = (sort_by, columns) => {
+    if (columns.includes(sort_by)) return sort_by;
+    else return Promise.reject({ status: 400, msg: "Invalid sort_by query"})
+};
 
+const checkOrder = (order) => {
+    const orderQ = order.toLowerCase();
+    if (orderQ === 'asc' || 'desc') return orderQ
+    else return Promise.reject({ status: 400, msg: "Invaid order query"})
 
-module.exports = { formatData, createRefObj };
+};
+
+module.exports = { formatData, createRefObj, checkSort, checkOrder };

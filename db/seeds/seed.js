@@ -1,5 +1,5 @@
 const db = require('../../db/connection.js');
-const { createRefObj } = require('../utils/data-manipulation.js');
+const { createRefObj } = require('../../utils/data-manipulation.js');
 const { dropTables, createTables, insertCategories, insertUsers, insertReviews, insertComments} = require('./manageTables.js');
 
 const seed = async ({ categoryData, commentData, reviewData, userData } ) => {

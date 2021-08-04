@@ -1,6 +1,6 @@
 const format = require('pg-format');
 const db = require('../../db/connection.js');
-const { formatData } = require('../utils/data-manipulation');
+const { formatData } = require('../../utils/data-manipulation');
 
 
 const dropTables = async () => {
