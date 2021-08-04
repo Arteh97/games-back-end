@@ -11,7 +11,7 @@ exports.getCommentsByReviewId = async (req, res, next) => {
     Promise.all([findReview, findComments])
     .then(([comments]) => {
         res.status(200).send({ comments });
-    })
+    }).catch(next);
 };
 
 exports.postComment = async () => {

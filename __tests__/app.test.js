@@ -9,23 +9,23 @@ beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
 describe('/api, table seeding and invalid path handling', () => {
-    test('should respond with "all OK from the api router', () => {
+        test('should respond with "all OK from the api router', () => {
         return request(app)
         .get('/api')
         .expect(200)
         .then((response) => {
             expect(response.body).toEqual({ "msg": 'All OK from /api !' })
         });
-    });
-    test("GET - status: 404,  should respond with 'Invalid Path' if given an incorrect path",    () => {
+        });
+        test("GET - status: 404,  should respond with 'Invalid Path' if given an incorrect path",    () => {
         return request(app)
         .get('/abc')
         .expect(404)
         .then(({ body: { msg }}) => {
             expect(msg).toEqual("Invalid Path")
         })
-    });
-    test('GET - status: 200, responds with an array the newly inserted category objects', () => {
+        });
+        test('GET - status: 200, responds with an array the newly inserted category objects', () => {
     return request(app)
     .get('/api/categories')
     .expect(200)
@@ -39,8 +39,8 @@ describe('/api, table seeding and invalid path handling', () => {
             });
         });
     });
-    });
-    test('GET - status: 200, responds with an array of the newly inserted review objects', () => {
+        });
+        test('GET - status: 200, responds with an array of the newly inserted review objects', () => {
     return request(app)
     .get('/api/reviews')
     .expect(200)
@@ -59,7 +59,7 @@ describe('/api, table seeding and invalid path handling', () => {
                 });
             });
         }); 
-    });
+        });
 });
 // all tests passing!
 
@@ -67,7 +67,7 @@ describe('/api, table seeding and invalid path handling', () => {
 
 // error handling for - a review that doesn't exist, invalid syntax etc...
 describe('/api/reviews', () => {
-    test('GET - status: 200, responds with an array of review objects', () => {
+        test('GET - status: 200, responds with an array of review objects', () => {
         // should accept queries sort_by, order, category
         // error handle for if any of the query is invalid
         return request(app)
@@ -77,8 +77,8 @@ describe('/api/reviews', () => {
             // console.log(response.body)
             ;expect(response.body.reviews.length).toEqual(13);
         });
-    });
-    test('GET - status: 200, responds with reviews sorted by "created_at" descending (default)', () => {
+        });
+        test('GET - status: 200, responds with reviews sorted by "created_at" descending (default)', () => {
         return request(app)
         .get('/api/reviews?')
         .expect(200)
@@ -90,8 +90,8 @@ describe('/api/reviews', () => {
             expect(reviews).toEqual(sorted);
             expect(reviews).not.toBe(sorted);
         });
-    });
-    test('GET - status: 200, responsed with reviews sorted by "created_at ascending" ', () => {
+        });
+        test('GET - status: 200, responsed with reviews sorted by "created_at ascending" ', () => {
         return request(app)
         .get('/api/reviews?order=asc')
         .expect(200)
@@ -103,8 +103,8 @@ describe('/api/reviews', () => {
             expect(reviews).toEqual(sorted);
             expect(reviews).not.toBe(sorted);
         });
-    });
-    test('GET - status:  200, responds with reviews sorted by votes descending', () => {
+        });
+        test('GET - status:  200, responds with reviews sorted by votes descending', () => {
         return request(app)
         .get('/api/reviews?sort_by=votes')
         .expect(200)
@@ -117,8 +117,8 @@ describe('/api/reviews', () => {
             expect(reviews).toEqual(sorted);
             expect(reviews).not.toBe(sorted);
             });
-        });
-    test('GET - status: 200, responds with reviews sorted by votes ascending', () => {
+            });
+        test('GET - status: 200, responds with reviews sorted by votes ascending', () => {
         return request(app)
         .get('/api/reviews?sort_by=votes&&order=asc')
         .expect(200)
@@ -131,8 +131,8 @@ describe('/api/reviews', () => {
         expect(reviews).toEqual(sorted);
         expect(reviews).not.toBe(sorted);
         });
-        });
-    test('GET - status: 200, responds with the reviews filtered by category', () => {
+            });
+        test('GET - status: 200, responds with the reviews filtered by category', () => {
         return request(app)
         .get('/api/reviews?category=dexterity')
         .expect(200)
@@ -141,9 +141,9 @@ describe('/api/reviews', () => {
                 expect(review.category).toBe('dexterity');
             });
         });
-        });
+            });
 
-    test('GET - status: 200, responds with the reviews owner by a specific owner', () => {
+        test('GET - status: 200, responds with the reviews owner by a specific owner', () => {
         return request(app)
         .get('/api/reviews?owner=bainesface')
         .expect(200)
@@ -152,19 +152,18 @@ describe('/api/reviews', () => {
                 expect(review.owner).toEqual('bainesface');
             });
         });
-        });
-    test('ERROR - status 400, responds with "Invalid sort_by query" when provided a non-valid column', () => {
+            });
+        test('ERROR - status 400, responds with "Invalid sort_by query" when provided a non-valid column', () => {
         return request(app)
         .get('/api/reviews?sort_by=northcoders')
         .expect(400)
         .then(({body: { msg }}) => {
-            expect(msg).toBe("Invalid sort_by query");
+            expect(msg).toBe("Invalid sort query");
         });
+            });
         });
-        // test()
-    });
 
-    describe('/api/reviews/:review_id', () => {
+describe('/api/reviews/:review_id', () => {
         test('GET - status: 200, responds with the searched review, with a comment_count column added to it ', () => {
             const num = 3
             return request(app)
@@ -241,13 +240,19 @@ describe('/api/reviews', () => {
                 expect(error.body).toEqual({ msg: "Bad Request"});
             });
         });
+});
+
+// use jest matcher - expect().toBeSortedBy('column', { asc/desc: true/false });
+
+
+describe('/api/reviews/:review_id/comments', () => {
         test('GET - status: 200, responds with all comments associated with the given review_id', () => {
             const num = 2;
             return request(app)
             .get(`/api/reviews/${num}/comments`)
             .expect(200)
             .then(({ body: { comments }}) => {
-                console.log(comments);
+                // console.log(comments);
                 comments.forEach((comment) => {
                     expect(comment.review_id).toBe(num);
                 });
@@ -267,7 +272,7 @@ describe('/api/reviews', () => {
                 expect(comments).not.toBe(copy);
                 comments.forEach((comment) => {
                     expect(comment.review_id).toEqual(num);
-                })
+                });
             });
         });
         test('GET - status: 200, responds with all comments associated with the given review_id, sorted by votes descending(default)', () => {
@@ -276,17 +281,42 @@ describe('/api/reviews', () => {
             .get(`/api/reviews/${num}/comments`)
             .expect(200)
             .then(({ body: { comments }}) => {
-                console.log(comments);
+                // console.log(comments);
                 expect(comments).toBeSortedBy('votes', { descending: true});
             });
         });
         test('GET - status: 200, responds with all comments associated with the given review_id, sorted by votes ascending', () => {
+        const num = 2;
+        return request(app)
+        .get(`/api/reviews/${num}/comments?sort_by=votes&order=asc`)
+        .expect(200)
+        .then(({ body: { comments }}) => {
+            expect(comments).toBeSortedBy('votes', { ascending: true });
+            });
+        });
+        test('GET - status: 200, responds, with all comments associated with the given review_id, sorted by comment_id ascending', () => {
             const num = 2;
             return request(app)
-            .get(`/api/reviews/${num}/comments?sort_by=votes&order=asc`)
+            .get(`/api/reviews/${num}/comments?sort_by=comment_id&order=asc`)
             .expect(200)
             .then(({ body: { comments }}) => {
-                expect(comments).toBeSortedBy('votes', { ascending: true });
-            })
+                expect(comments).toBeSortedBy('comment_id', { ascending: true });
+            });
+        });
+    });
+    test('ERROR - status: 400, responds with "Invalid sort query" if given a non-valid column', () => {
+        return request(app)
+        .get('/api/reviews/10/comments?sort_by=address')
+        .expect(400)
+        .then((error) => {
+            expect(error.body).toEqual({ msg: "Invalid sort query"});
         })
+    });
+    test('ERROR - status: 400, responds with "Invalid order query" if given a non-valid order data-type', () => {
+        return request(app)
+        .get('/api/reviews/:review_id/comments?sort_by=votes&order=not-valid')
+        .expect(400)
+        .then((error) => {
+            expect(error.body).toEqual({ msg: "Invalid order query" });
+        });
 });
