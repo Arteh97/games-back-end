@@ -21,6 +21,10 @@ describe('formatData()', () => {
 
         expect(formatData(input)).toEqual([['euro game', 'Abstact games that involve little luck'], ["children's games", 'Games suitable for children'], ['euro game', 'Abstact games that involve little luck']]);
     })
+    it('should not mutate the original data', () => {
+        
+        
+    });
 
 });
 
@@ -44,5 +48,9 @@ describe('create reference object', () => {
             created_at: new Date(1511354613389)
           }]
           expect(createRefObj(input, 'body', 'votes')).toEqual({'I loved this game too': 17, 'I loved this game too!': 16});
+    });
+    test('should not mutate the original input', () => {
+
+        
     });
 })
