@@ -24,7 +24,7 @@ exports.patchReview = async (review_id, inc_votes) => {
     WHERE review_id = $2 RETURNING *;`, [inc_votes, review_id])
     .then((result) => result.rows);
 
-    if(!updated.length) return Promise.reject({ status:404, msg: "Review not found"})
+    if(!updated.length) return Promise.reject({ status:404, msg: "Review not found"});
 
     return updated;
 }
