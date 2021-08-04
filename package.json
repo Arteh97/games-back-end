@@ -32,5 +32,10 @@
     "nodemon": "^2.0.12",
     "pg-format": "^1.0.4",
     "supertest": "^6.1.4"
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "jest-sorted"
+    ]
   }
 }

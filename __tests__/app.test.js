@@ -253,7 +253,7 @@ describe('/api/reviews', () => {
                 });
             });
         });
-        test('GET - status: 200, responds with all comments associated with a review_id, sorted by the default (created_at)', () => {
+        test('GET - status: 200, responds with all comments associated with the given review_id, sorted by the default (created_at)', () => {
             const num = 2;
             return request(app)
             .get(`/api/reviews/${num}/comments`)
@@ -263,9 +263,30 @@ describe('/api/reviews', () => {
                 const check = copy.sort(function (com1, com2) {
                     return com2.created_at - com1.created_at;
                 });
-                // expect(comments).toEqual(check);
-                // expect(comments).not.toBe(check);
+                expect(comments).toEqual(copy)
+                expect(comments).not.toBe(copy);
+                comments.forEach((comment) => {
+                    expect(comment.review_id).toEqual(num);
+                })
             });
         });
-        // test
-    })
+        test('GET - status: 200, responds with all comments associated with the given review_id, sorted by votes descending(default)', () => {
+            const num = 3;
+            return request(app)
+            .get(`/api/reviews/${num}/comments`)
+            .expect(200)
+            .then(({ body: { comments }}) => {
+                console.log(comments);
+                expect(comments).toBeSortedBy('votes', { descending: true});
+            });
+        });
+        test('GET - status: 200, responds with all comments associated with the given review_id, sorted by votes ascending', () => {
+            const num = 2;
+            return request(app)
+            .get(`/api/reviews/${num}/comments?sort_by=votes&order=asc`)
+            .expect(200)
+            .then(({ body: { comments }}) => {
+                expect(comments).toBeSortedBy('votes', { ascending: true });
+            })
+        })
+});

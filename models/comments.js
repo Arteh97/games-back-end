@@ -1,4 +1,5 @@
 const db = require('../db/connection');
+const { checkSort, checkOrder } = require('../utils/data-manipulation');
 
 exports.selectComments = async ( review_id, sort_by = 'created_at', order = 'desc' ) => {
 
@@ -10,8 +11,8 @@ exports.selectComments = async ( review_id, sort_by = 'created_at', order = 'des
         'body'
     ]
 
-    const validSort = validColumns.includes(sort_by);
-    const validOrder = order.toLowerCase() === 'asc' || 'desc';
+const validSort = await checkSort(sort_by, validColumns);
+const validOrder = await checkOrder(order);
 
     if(!validSort) {
         return Promise.reject({ status: 400, msg: "Invalid sort query"})
