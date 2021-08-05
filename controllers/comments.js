@@ -14,7 +14,9 @@ exports.getCommentsByReviewId = async (req, res, next) => {
     }).catch(next);
 };
 
-exports.postComment = async () => {
-    
-}
+// exports.postComment = async (req, res, next) => {
+//     const { review_id } = req.params;
+//     const { username, body } = req.body;
+//     console.log(review_id, req.body);
+// }
 

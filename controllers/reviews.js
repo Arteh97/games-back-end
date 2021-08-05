@@ -1,4 +1,5 @@
 const { selectReviewById, patchReview, selectReviews } = require('../models/reviews');
+const { addComment } = require('../models/comments');
 
 
 exports.getReviewById = (req, res, next) => {
@@ -23,4 +24,12 @@ exports.getReviews = (req, res, next) => {
         res.status(200).send({ reviews });
     })
     .catch(next);
+}
+
+exports.postComment = async (req, res, next) => {
+    const { review_id } = req.params;
+    const { username, body } = req.body;
+    addComment(review_id, username, body).then((comment) => {
+        res.status(201).send({ comment });
+    })
 }

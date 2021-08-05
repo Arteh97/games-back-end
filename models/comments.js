@@ -24,10 +24,20 @@ const validOrder = await checkOrder(order);
 
     const queryStr = `SELECT * FROM comments where review_id = $1 ORDER BY ${sort_by} ${order}`;
 
-    const comments = await db.query(queryStr, [review_id]).then((found) => {
-        return found.rows;
+    const comments = await db.query(queryStr, [review_id]).then((result) => {
+        return result.rows;
     });
 
     return comments;
 
 };
+
+// exports.addComment = async (review_id, username, body) => { 
+//     // insert a comment into the comment table...
+//     // with the correct review_id
+//     // comment table accepts author and body, so username needs changing
+//     // must be within an array in dbquery
+
+
+
+// }

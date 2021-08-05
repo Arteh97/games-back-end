@@ -161,6 +161,14 @@ describe('/api/reviews', () => {
             expect(msg).toBe("Invalid sort query");
         });
             });
+            test('ERROR - status: 400, responds with "Invalid order query" if given a non-valid order data-type', () => {
+                return request(app)
+                .get('/api/reviews?sort_by=votes&order=not-valid')
+                .expect(400)
+                .then((error) => {
+                    expect(error.body).toEqual({ msg: "Invalid order query" });
+                });
+            });
         });
 
 describe('/api/reviews/:review_id', () => {
@@ -258,7 +266,17 @@ describe('/api/reviews/:review_id/comments', () => {
                 });
             });
         });
-        test('GET - status: 200, responds with all comments associated with the given review_id, sorted by the default (created_at)', () => {
+        test('ERROR - status: 404, responds with "Review not found" if given a review_id that is not in the database', () => {
+            return request(app)
+            .get(`/api/reviews/1000/comments`)
+            .expect(404)
+            .then((error) => {
+                expect(error.body).toEqual({ msg: "Review not found"});
+                // console.log(comments);
+            });
+        });
+
+        test('GET - status: 200, responds with all comments associated with the given review_id, sorted by the default (created_at, descending)', () => {
             const num = 2;
             return request(app)
             .get(`/api/reviews/${num}/comments`)
@@ -282,16 +300,16 @@ describe('/api/reviews/:review_id/comments', () => {
             .expect(200)
             .then(({ body: { comments }}) => {
                 // console.log(comments);
-                expect(comments).toBeSortedBy('votes', { descending: true});
+                expect(comments).toBeSortedBy('votes', { descending: true });
             });
         });
         test('GET - status: 200, responds with all comments associated with the given review_id, sorted by votes ascending', () => {
-        const num = 2;
-        return request(app)
-        .get(`/api/reviews/${num}/comments?sort_by=votes&order=asc`)
-        .expect(200)
-        .then(({ body: { comments }}) => {
-            expect(comments).toBeSortedBy('votes', { ascending: true });
+            const num = 2;
+            return request(app)
+            .get(`/api/reviews/${num}/comments?sort_by=votes&order=asc`)
+            .expect(200)
+            .then(({ body: { comments }}) => {
+                expect(comments).toBeSortedBy('votes', { ascending: true });
             });
         });
         test('GET - status: 200, responds, with all comments associated with the given review_id, sorted by comment_id ascending', () => {
@@ -311,7 +329,7 @@ describe('/api/reviews/:review_id/comments', () => {
                 expect(error.body).toEqual({ msg: "Invalid sort query"});
             })
         });
-        test('ERROR - status: 400, responds with "Invalid order query" if given a non-valid order data-type', () => {
+        test('ERROR - status: 400, responds with "Invalid order query" if not given "asc" or "desc" ', () => {
             return request(app)
             .get('/api/reviews/:review_id/comments?sort_by=votes&order=not-valid')
             .expect(400)
@@ -319,7 +337,18 @@ describe('/api/reviews/:review_id/comments', () => {
                 expect(error.body).toEqual({ msg: "Invalid order query" });
             });
         });
-        test('POST - status: 201, responds with the newly posted comment', () => {
-            
+        test('POST - status: 201, responds with the comment after adding it to the database', () => {
+          const review_id = 1;
+          return request.agent(app)
+          .post(`/api/reviews/${review_id}/comments`) 
+          .send({ 
+              username: 'Arteh97',
+              body: 'Great game, wish I could play it all-day!', 
+            })
+          .expect(201)
+          .then(({ body: { comment }}) => {
+              expect(comment).toEqual({ username: "Arteh97", body: "Great game, wish I could play it all-day!" });
+          })
+        
         })
-    });
+})
