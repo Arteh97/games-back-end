@@ -16,11 +16,10 @@ exports.customErrors = (err, req, res, next) => {
 
 exports.psqlErrors = (err, req, res, next) => {
     const errCodes = {
-        '22P02': {  msg: "Bad Request", status: 400},
+        '22P02': {  msg: "Invalid Input", status: 400},
         '23502': { msg: 'Sorry, unprocessable entity', status: 422 },
         '23503': { msg: 'Sorry, not found', status: 404 },
         '42703': { msg: 'Bad request', status: 400 },
-        '23505': { msg: 'Bad request - that already exists', status: 400 },
     }
     if (err.code) {
     for (let key in errCodes) {

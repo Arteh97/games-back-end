@@ -11,10 +11,9 @@ exports.getCommentsByReviewId = (req, res, next) => {
 };
 
 exports.postComment = (req, res, next) => {
-    console.log('in the controller');
     const { review_id } = req.params;
-    const { username, body } = req.body;
-    addComment(review_id, username, body).then((comment) => {
+    const { body } = req;
+    addComment(review_id, body).then((comment) => {
         res.status(201).send({ comment });
     }).catch(next);
 }

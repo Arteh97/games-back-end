@@ -201,12 +201,12 @@ describe('/api/reviews/:review_id', () => {
                 expect(error.body).toEqual({ msg: "Review not found" });
             });
         });
-        test('ERROR - status: 400, responds with "Bad Request" when passed an incorrect data type', () => {
+        test('ERROR - status: 400, responds with "Invalid Input" when passed an incorrect data type', () => {
             return request(app)
             .get('/api/reviews/incorrect')
             .expect(400)
             .then((error) => {
-                expect(error.body).toEqual({ msg: "Bad Request" });
+                expect(error.body).toEqual({ msg: "Invalid Input" });
             });
         });
         test('PATCH - status 201, responds with a review after its vote count has been updated', () => {
@@ -239,13 +239,13 @@ describe('/api/reviews/:review_id', () => {
                 expect(error.body).toEqual({ msg: "Review not found"});
             });
         });
-        test('ERROR - status 400, responds with "Bad Request" when passed an incorrect inc_vote data type', () => {
+        test('ERROR - status 400, responds with "Invalid Input" when passed an incorrect inc_vote data type', () => {
             return request.agent(app)
             .patch('/api/reviews/:review_id')
             .send({ inc_votes : 'incorrect' })
             .expect(400)
             .then((error) => {
-                expect(error.body).toEqual({ msg: "Bad Request"});
+                expect(error.body).toEqual({ msg: "Invalid Input"});
             });
         });
 });
@@ -254,27 +254,33 @@ describe('/api/reviews/:review_id', () => {
 
 
 describe('/api/reviews/:review_id/comments', () => {
-        test.only('GET - status: 200, responds with all comments associated with the given review_id', () => {
+        test('GET - status: 200, responds with all comments associated with the given review_id', () => {
             return request(app)
-            .get(`/api/reviews/1/comments?sort_by=votes`)
+            .get(`/api/reviews/2/comments?sort_by=votes`)
             .expect(200)
             .then(({ body: { comments }}) => {
-                console.log(comments);
                 comments.forEach((comment) => {
-                    expect(comment.review_id).toBe(num);
+                    expect(comment.review_id).toBe(2);
                 });
             });
         });
-        test('ERROR - status: 404, responds with "Review not found" if given a review_id that is not in the database', () => {
+        test('ERROR - status: 404, responds with "No comments found" if given a review_id that is not in the database', () => {
             return request(app)
             .get(`/api/reviews/1000/comments`)
-            .expect(404)
+            .expect(400)
             .then((error) => {
-                expect(error.body).toEqual({ msg: "Review not found"});
+                expect(error.body).toEqual({ msg: "No comments found"});
                 // console.log(comments);
             });
         });
-
+        test('ERROR - status: 400 - should respond with "No comments found" if none found or given a review_id that isnt in the database', () => {
+            return request(app)
+            .get('/api/reviews/300/comments')
+            .expect(400)
+            .then((error) => {
+                expect(error.body).toEqual({ msg: "No comments found"});
+            })
+        });
         test('GET - status: 200, responds with all comments associated with the given review_id, sorted by the default (created_at, descending)', () => {
             const num = 3
             return request(app)
@@ -283,7 +289,7 @@ describe('/api/reviews/:review_id/comments', () => {
             .then(({ body: { comments }}) => {
                 const copy = [...comments]
                 const check = copy.sort(function (com1, com2) {
-                    return com2.created_at - com1.created_at;
+                    return com1.created_at - com2.created_at;
                 });
                 expect(comments).toEqual(copy)
                 expect(comments).not.toBe(copy);
@@ -292,10 +298,10 @@ describe('/api/reviews/:review_id/comments', () => {
                 });
             });
         });
-        test('GET - status: 200, responds with all comments associated with the given review_id, sorted by votes descending(default)', () => {
+        test('GET - status: 200, responds with all comments associated with the given review_id, sorted by votes descending', () => {
             const num = 2;
             return request(app)
-            .get(`/api/reviews/${num}/comments`)
+            .get(`/api/reviews/${num}/comments?sort_by=votes`)
             .expect(200)
             .then(({ body: { comments }}) => {
                 // console.log(comments);
@@ -337,14 +343,26 @@ describe('/api/reviews/:review_id/comments', () => {
             });
         });
         test('POST - status: 201, responds with the comment after adding it to the database', () => {
-            const num = 4
           return request.agent(app)
-          .post(`/api/reviews/${num}/comments`) 
-          .send({ body: 'Great game, wish I could play it all-day!', username: 'Arteh97' })
+          .post(`/api/reviews/2/comments`) 
+          .send({ 
+              body: "Great game, wish I could play it all-day!", 
+              username: "bainesface"
+             })
           .expect(201)
           .then(({ body: { comment }}) => {
-              expect(comment).toEqual({ username: 'Arteh97', body: 'Great game, wish I could play it all-day!' });
-          })
-        
-        })
-})
+            //   console.log(comment);
+              expect(comment[0]).hasOwnProperty('created_at');
+              expect(comment[0]).toMatchObject({ author: "bainesface", 
+              body: "Great game, wish I could play it all-day!",
+              comment_id: 7,
+              review_id: 2,
+              votes: 0,
+                });
+            });
+        });
+        // inavlid/non-existent review_id, non-existent author, invalid request body
+        // test('ERROR -  status ', () => {
+        //     return re
+        // });
+});
