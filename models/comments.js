@@ -1,8 +1,18 @@
 const db = require('../db/connection');
 const { checkSort, checkOrder } = require('../utils/data-manipulation');
 
-exports.selectComments = async ( review_id, sort_by = 'created_at', order = 'desc' ) => {
+    exports.addComment = (review_id, { body, username }) => {
+        return db.query(`INSERT INTO comments (review_id, author, body) 
+        VALUES ($1, $2, $3) RETURNING *;`,
+          [review_id, username, body]
+        ).then((result) => {
+            console.log(result);
+            return result.rows;
+        });
+    };
 
+exports.selectComments = async ( review_id, sort_by = 'created_at', order = 'desc' ) => {
+    console.log('in the model');
     const validColumns = [
         'comment_id',
         'votes',
@@ -28,16 +38,9 @@ const validOrder = await checkOrder(order);
         return result.rows;
     });
 
+    if (!comments.length) return Promise.reject({ msg: " No comments found"});
+
     return comments;
 
 };
 
-// exports.addComment = async (review_id, username, body) => { 
-//     // insert a comment into the comment table...
-//     // with the correct review_id
-//     // comment table accepts author and body, so username needs changing
-//     // must be within an array in dbquery
-
-
-
-// }

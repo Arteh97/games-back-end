@@ -10,8 +10,9 @@ exports.selectReviewById = async (review_id) => {
     ON reviews.review_id = comments.review_id 
     WHERE reviews.review_id = $1 GROUP BY reviews.review_id LIMIT 1;`;
 
-    const review = await db.query(queryStr, [review_id])
-    .then((result) => result.rows);
+    const review = await db.query(queryStr, [review_id]).then((review) => {
+      return review.rows;
+    })
 
   if (!review.length) {
     return Promise.reject({ status: 404, msg: "Review not found",});

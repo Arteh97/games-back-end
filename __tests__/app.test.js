@@ -254,13 +254,12 @@ describe('/api/reviews/:review_id', () => {
 
 
 describe('/api/reviews/:review_id/comments', () => {
-        test('GET - status: 200, responds with all comments associated with the given review_id', () => {
-            const num = 2;
+        test.only('GET - status: 200, responds with all comments associated with the given review_id', () => {
             return request(app)
-            .get(`/api/reviews/${num}/comments`)
+            .get(`/api/reviews/1/comments?sort_by=votes`)
             .expect(200)
             .then(({ body: { comments }}) => {
-                // console.log(comments);
+                console.log(comments);
                 comments.forEach((comment) => {
                     expect(comment.review_id).toBe(num);
                 });
@@ -277,7 +276,7 @@ describe('/api/reviews/:review_id/comments', () => {
         });
 
         test('GET - status: 200, responds with all comments associated with the given review_id, sorted by the default (created_at, descending)', () => {
-            const num = 2;
+            const num = 3
             return request(app)
             .get(`/api/reviews/${num}/comments`)
             .expect(200)
@@ -294,7 +293,7 @@ describe('/api/reviews/:review_id/comments', () => {
             });
         });
         test('GET - status: 200, responds with all comments associated with the given review_id, sorted by votes descending(default)', () => {
-            const num = 3;
+            const num = 2;
             return request(app)
             .get(`/api/reviews/${num}/comments`)
             .expect(200)
@@ -338,16 +337,13 @@ describe('/api/reviews/:review_id/comments', () => {
             });
         });
         test('POST - status: 201, responds with the comment after adding it to the database', () => {
-          const review_id = 1;
+            const num = 4
           return request.agent(app)
-          .post(`/api/reviews/${review_id}/comments`) 
-          .send({ 
-              username: 'Arteh97',
-              body: 'Great game, wish I could play it all-day!', 
-            })
+          .post(`/api/reviews/${num}/comments`) 
+          .send({ body: 'Great game, wish I could play it all-day!', username: 'Arteh97' })
           .expect(201)
           .then(({ body: { comment }}) => {
-              expect(comment).toEqual({ username: "Arteh97", body: "Great game, wish I could play it all-day!" });
+              expect(comment).toEqual({ username: 'Arteh97', body: 'Great game, wish I could play it all-day!' });
           })
         
         })
