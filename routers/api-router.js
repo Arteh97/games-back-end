@@ -1,6 +1,7 @@
-const apiRouter = require('express').Router();
+const express = require('express');
+const apiRouter = express.Router();
 const catRouter =  require('./category-router');
-const reviewRouter = require('./review-router')
+const reviewRouter = require('./review-router');
 
 
 apiRouter.get('/', (req, res) => {
