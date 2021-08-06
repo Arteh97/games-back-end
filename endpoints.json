@@ -57,6 +57,7 @@
     "exampleResponse": {
       "comments": [
         {
+<<<<<<< HEAD
           "comment_id": 7,
           "author": "bainesface",
           "created_at": null,
@@ -78,6 +79,13 @@
           "comment_id": 7,
           "review_id": 2,
           "votes": 0
+=======
+          "body": "Now this is a story all about how, board games turned my life upside down",
+          "belongs_to": "Monopoly",
+          "created_by": "cooljmessy",
+          "votes": 13,
+          "created_at": "new Date(1610965445410)"
+>>>>>>> 7e48e48b24836cd664a9b084736907efa2a28a15
         }
       ]
     }

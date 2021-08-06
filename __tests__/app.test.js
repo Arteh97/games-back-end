@@ -401,4 +401,8 @@ describe('/api/reviews/:review_id/comments', () => {
             
 });
 
+<<<<<<< HEAD
 // describe('GET - /api - all paths')
+=======
+describe('GET - /api - all paths')
+>>>>>>> 7e48e48b24836cd664a9b084736907efa2a28a15
