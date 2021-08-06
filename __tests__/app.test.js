@@ -400,3 +400,5 @@ describe('/api/reviews/:review_id/comments', () => {
         });
             
 });
+
+describe('GET - /api - all paths')
