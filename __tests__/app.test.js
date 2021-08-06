@@ -351,7 +351,7 @@ describe('/api/reviews/:review_id/comments', () => {
              })
           .expect(201)
           .then(({ body: { comment }}) => {
-            //   console.log(comment);
+              console.log(comment);
               expect(comment[0]).hasOwnProperty('created_at');
               expect(comment[0]).toMatchObject({ author: "bainesface", 
               body: "Great game, wish I could play it all-day!",
@@ -400,3 +400,5 @@ describe('/api/reviews/:review_id/comments', () => {
         });
             
 });
+
+// describe('GET - /api - all paths')

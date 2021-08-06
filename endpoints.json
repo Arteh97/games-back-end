@@ -1,4 +1,4 @@
-{
+{ 
   "GET /api": {
     "description": "serves up a json representation of all the available endpoints of the api"
   },
@@ -27,6 +27,57 @@
           "category": "hidden-roles",
           "created_at": 1610964101251,
           "votes": 5
+        }
+      ]
+    } 
+  },
+  "GET /api/reviews/:review_id": {
+    "description": "serves an array containing the review that has been searched for by it's :id",
+    "queries": [":review_id"],
+    "exampleResponse": {
+      "review": [
+        {
+          "review_id": 1,
+          "title": "Agricola",
+          "designer": "Uwe Rosenberg",
+          "owner": "mallionaire", 
+          "review_img_url": 
+          "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+          "review_body": "Farmyard fun!",
+          "category": "euro game",
+          "created_at": "expect.any(String)",
+          "votes": 0
+        }
+      ]
+    }
+  },
+  "GET /api/reviews/:review_id/comments": {
+    "description": "serves an array of comments linked to the :review_id from the query",
+    "queries": [":review_id", "sort_by", "order"],
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 7,
+          "author": "bainesface",
+          "created_at": null,
+          "body": "Great game, wish I could play it all-day!",
+          "votes": 0,
+          "review_id": 2
+        }
+      ]
+    }
+  },
+  "POST /api/reviews/:review_id/comments": {
+    "description": "serves a comment after it has just been posted",
+    "queries": [":review_id"],
+    "exampleResponse": {
+      "comment": [
+        {
+          "author": "bainesface", 
+          "body": "Great game, wish I could play it all-day!",
+          "comment_id": 7,
+          "review_id": 2,
+          "votes": 0
         }
       ]
     }

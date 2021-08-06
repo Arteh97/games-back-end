@@ -1,5 +1,4 @@
 // extract any functions you are using to manipulate your data, into this file
-
 const createRefObj = (arr, ref1, ref2) => {
     const refObj = {};
     arr.forEach((object) => {
@@ -34,5 +33,6 @@ const lowerCaseOrder = order.toLowerCase();
     ? lowerCaseOrder
     : Promise.reject({ status: 400, msg: 'Invalid order query' });
 };
+
 
 module.exports = { formatData, createRefObj, checkSort, checkOrder };
