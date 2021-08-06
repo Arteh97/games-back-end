@@ -1,7 +1,10 @@
 const db = require('../db/connection');
 const { checkSort, checkOrder } = require('../utils/data-manipulation');
 
-    exports.addComment = (review_id, { body, username }) => {
+exports.addComment = (review_id, { body, username }) => {
+    
+    if (body === '') return Promise.reject({ status: 400, msg: 'Comment section is empty' })
+
         return db.query(`INSERT INTO comments (review_id, author, body) 
         VALUES ($1, $2, $3) RETURNING *;`,
           [review_id, username, body]

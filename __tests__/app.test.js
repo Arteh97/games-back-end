@@ -201,12 +201,12 @@ describe('/api/reviews/:review_id', () => {
                 expect(error.body).toEqual({ msg: "Review not found" });
             });
         });
-        test('ERROR - status: 400, responds with "Invalid Input" when passed an incorrect data type', () => {
+        test('ERROR - status: 400, responds with "Invalid input" when passed an incorrect data type', () => {
             return request(app)
             .get('/api/reviews/incorrect')
             .expect(400)
             .then((error) => {
-                expect(error.body).toEqual({ msg: "Invalid Input" });
+                expect(error.body).toEqual({ msg: "Invalid input" });
             });
         });
         test('PATCH - status 201, responds with a review after its vote count has been updated', () => {
@@ -239,13 +239,13 @@ describe('/api/reviews/:review_id', () => {
                 expect(error.body).toEqual({ msg: "Review not found"});
             });
         });
-        test('ERROR - status 400, responds with "Invalid Input" when passed an incorrect inc_vote data type', () => {
+        test('ERROR - status 400, responds with "Invalid input" when passed an incorrect inc_vote data type', () => {
             return request.agent(app)
             .patch('/api/reviews/:review_id')
             .send({ inc_votes : 'incorrect' })
             .expect(400)
             .then((error) => {
-                expect(error.body).toEqual({ msg: "Invalid Input"});
+                expect(error.body).toEqual({ msg: "Invalid input"});
             });
         });
 });
@@ -346,8 +346,8 @@ describe('/api/reviews/:review_id/comments', () => {
           return request.agent(app)
           .post(`/api/reviews/2/comments`) 
           .send({ 
-              body: "Great game, wish I could play it all-day!", 
-              username: "bainesface"
+              body: 'Great game, wish I could play it all-day!', 
+              username: 'bainesface'
              })
           .expect(201)
           .then(({ body: { comment }}) => {
@@ -362,7 +362,41 @@ describe('/api/reviews/:review_id/comments', () => {
             });
         });
         // inavlid/non-existent review_id, non-existent author, invalid request body
-        // test('ERROR -  status ', () => {
-        //     return re
-        // });
+        test('ERROR -  status: 404, responds with "User/Results not found" when review_id is invalid', () => {
+            return request.agent(app)
+            .post(`/api/reviews/3000/comments`)
+            .send({
+                body: 'Amazing graphics, 10 out of 10!',
+                username: 'mallionaire'
+            })
+            .expect(404)
+            .then((error) => {
+                expect(error.body).toEqual({ msg: "User/Results not found"});
+            })
+        });
+        test('ERROR - status: 400, responds with "Invalid input" when passed an invalid/empty body', () => {
+            return request.agent(app)
+            .post(`/api/reviews/2/comments`)
+            .send({
+                body: '',
+                username: 'bainesface'
+            })
+            .expect(400)
+            .then((error) => {
+                expect(error.body).toEqual({ msg: "Comment section is empty"});
+            })
+        })
+        test('ERROR - status 404, responds with "User/Results not found" if given a author that does not exist ini the database ', () => {
+            return request.agent(app)
+            .post(`/api/reviews/3/comments`)
+            .send({
+                body: 'Amazing graphics, 10 out of 10!',
+                username: 'Arteh97'
+            })
+            .expect(404)
+            .then((error) => {
+                expect(error.body).toEqual({ msg: "User/Results not found"});
+            })
+        });
+            
 });

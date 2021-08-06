@@ -4,7 +4,6 @@ exports.error500 = () => {
 };
 
 exports.invalidPath = (req, res, next) => {
-    // console.log(err);
     res.status(404).send({ msg: "Invalid Path"});
 };
 
@@ -16,10 +15,11 @@ exports.customErrors = (err, req, res, next) => {
 
 exports.psqlErrors = (err, req, res, next) => {
     const errCodes = {
-        '22P02': {  msg: "Invalid Input", status: 400},
-        '23502': { msg: 'Sorry, unprocessable entity', status: 422 },
-        '23503': { msg: 'Sorry, not found', status: 404 },
         '42703': { msg: 'Bad request', status: 400 },
+        '22P02': {  msg: 'Invalid input', status: 400},
+        '23502': { msg: 'Invalid request', status: 422 },
+        '23503': { msg: 'User/Results not found', status: 404 },
+        '23505': { msg: 'Relation already exists', status: 400 },
     }
     if (err.code) {
     for (let key in errCodes) {
