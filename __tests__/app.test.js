@@ -1,7 +1,7 @@
 const app = require('../app');
 const request = require('supertest');
 const db = require('../db/connection.js');
-const { copyWithin } = require('../db/data/test-data/categories');
+const endpoints = require('../endpoints.json');
 const testData = require('../db/data/test-data/index.js');
 const  seed  = require('../db/seeds/seed.js');
 
@@ -9,12 +9,12 @@ beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
 describe('/api, table seeding and invalid path handling', () => {
-        test('should respond with "all OK from the api router', () => {
+        test('should respond with a JSON of all available endpoints', () => {
         return request(app)
         .get('/api')
         .expect(200)
         .then((response) => {
-            expect(response.body).toEqual({ "msg": 'All OK from /api !' })
+            expect(response.body).toEqual(endpoints);
         });
         });
         test("GET - status: 404,  should respond with 'Invalid Path' if given an incorrect path",    () => {
@@ -351,7 +351,6 @@ describe('/api/reviews/:review_id/comments', () => {
              })
           .expect(201)
           .then(({ body: { comment }}) => {
-              console.log(comment);
               expect(comment[0]).hasOwnProperty('created_at');
               expect(comment[0]).toMatchObject({ author: "bainesface", 
               body: "Great game, wish I could play it all-day!",
@@ -401,8 +400,27 @@ describe('/api/reviews/:review_id/comments', () => {
             
 });
 
-<<<<<<< HEAD
-// describe('GET - /api - all paths')
-=======
-describe('GET - /api - all paths')
->>>>>>> 7e48e48b24836cd664a9b084736907efa2a28a15
+describe('/api/comments... & /api/users...', () => {
+    test('DELETE - status: 204, should respond with no content after deleting a given comment (:comment_id)', () => {
+        return request.agent(app)
+        .delete('/api/comments/7')
+        .expect(204)
+        .then(({ body : { deleted }}) => {
+            expect(deleted).toEqual({author: "bainesface", 
+            body: "Great game, wish I could play it all-day!",
+            comment_id: 7,
+            review_id: 2,
+            votes: 0,});
+        })
+    });
+})
+
+
+    // {
+    //     comment_id: 6,
+    //     author: "philippaclaire9",
+    //     created_at: "2021-03-27 19:49:48.11",
+    //     body: "Not sure about dogs, but my cat likes to get involved with board games, the boxes are their particular favourite",
+    //     votes: 10, 
+    //     review_id: 3
+    // }

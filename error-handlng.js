@@ -1,5 +1,5 @@
 exports.error500 = () => {
-    console.log(err, '<-- unhandled error');
+    console.log(err.message, '<-- unhandled error');
     res.status(500).send({ msg: "Internal Server Error" })
 };
 

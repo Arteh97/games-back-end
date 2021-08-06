@@ -8,10 +8,9 @@ app.use(express.json());
 app.use("/api", apiRouter);
 app.all("/*", invalidPath);
 
-app.use(error500);
 app.use(customErrors);
 app.use(psqlErrors);
-// app.use(serverError);
+app.use(error500);
 
 
 

@@ -44,7 +44,7 @@ const createTables = async () => {
 }
 
 const insertCategories = async (categoryData) => {
-    const formattedCategoryData = formatData(categoryData) //formatData returns array of property values
+    const formattedCategoryData = formatData(categoryData, [slug, description]) //formatData returns array of property values
     const queryStr = format(`INSERT INTO categories
         (slug, description)
         VALUES
@@ -54,7 +54,7 @@ const insertCategories = async (categoryData) => {
 };
 
 const insertUsers = async (userData) => {
-    const formattedUserData = formatData(userData)
+    const formattedUserData = formatData(userData, [username, avatar_url, name])
     const queryStr = format(`INSERT INTO users
     (username, avatar_url, name)
     VALUES
@@ -66,7 +66,7 @@ const insertUsers = async (userData) => {
 
 const insertReviews = async (reviewData) => {
     // console.log(reviewData);
-    const formattedReviewData = formatData(reviewData);
+    const formattedReviewData = formatData(reviewData, [title, designer, owner, review_img_url, review_body, category, votes]);
     const queryStr = format(`INSERT INTO reviews
     (title, designer, owner, review_img_url, review_body, category, created_at, votes)
     VALUES
@@ -77,7 +77,7 @@ const insertReviews = async (reviewData) => {
 }
 
 const insertComments = async (newCommentData) => {
-    const formattedCommentData = formatData(newCommentData);
+    const formattedCommentData = formatData(newCommentData, [body, votes, author, review_id]);
     const queryStr = format(`INSERT INTO comments
     (body, votes, created_at, author, review_id)
     VALUES

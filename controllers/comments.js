@@ -1,5 +1,4 @@
-const { addComment, selectComments } = require('../models/comments');
-const { selectReviewById } = require('../models/reviews');
+const { addComment, selectComments, removeComment } = require('../models/comments');
 
 exports.getCommentsByReviewId = (req, res, next) => {
     const { review_id } = req.params;
@@ -15,5 +14,12 @@ exports.postComment = (req, res, next) => {
     const { body } = req;
     addComment(review_id, body).then((comment) => {
         res.status(201).send({ comment });
+    }).catch(next);
+}
+
+exports.deleteComment = (req, res, next) => {
+    const { comment_id } = req.params;
+    removeComment(comment_id).then((deleted) => {
+        res.status(204).send({ deleted });
     }).catch(next);
 }

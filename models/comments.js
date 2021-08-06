@@ -45,3 +45,11 @@ const validOrder = await checkOrder(order);
 
 };
 
+exports.removeComment = async (comment_id) => {
+    return db.query(`DELETE from comments
+    WHERE comment_id = $1 RETURNING *;`, [comment_id]).then((num_of_comments_deleted) => {
+        console.log(num_of_comments_deleted.rows);
+        return num_of_comments_deleted.rows;
+    })
+}
+
