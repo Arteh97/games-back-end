@@ -47,7 +47,6 @@ const validOrder = await checkOrder(order);
 
 exports.removeComment = async (comment_id) => {
     return db.query(`DELETE from comments
-<<<<<<< HEAD
     WHERE comment_id = $1 RETURNING *;`, [comment_id]).then((comment) => {
         const deleted = comment.rows
         if(!deleted.length) return Promise.reject({ status: 404, msg: "Comment not found"})
@@ -63,11 +62,5 @@ exports.patchComment = async (comment_id, inc_votes) => {
     if (!updated.length) return Promise.reject({ status: 404, msg: "Comment not found"});
 
     return updated;
-=======
-    WHERE comment_id = $1 RETURNING *;`, [comment_id]).then((num_of_comments_deleted) => {
-        console.log(num_of_comments_deleted.rows);
-        return num_of_comments_deleted.rows;
-    })
->>>>>>> 918d02868828113a376a589938c80f32256586fa
 }
 

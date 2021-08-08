@@ -5,15 +5,12 @@ const endpoints = require('../endpoints.json');
 const testData = require('../db/data/test-data/index.js');
 const  seed  = require('../db/seeds/seed.js');
 const { expect, describe } = require('@jest/globals');
+const categories = require('../db/data/test-data/categories');
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
-<<<<<<< HEAD
 describe('/api and invalid path handling', () => {
-=======
-describe('/api, table seeding and invalid path handling', () => {
->>>>>>> 918d02868828113a376a589938c80f32256586fa
         test('should respond with a JSON of all available endpoints', () => {
         return request(app)
         .get('/api')
@@ -37,13 +34,27 @@ describe('/api/categories', () => {
         return request(app)
         .get('/api/categories')
         .expect(200)
-        .then((response) => {
-            expect(response.body).toHaveLength(4);
-            response.body.forEach((category) => {
+        .then(({ body: { categories }}) => {
+            expect(categories).toHaveLength(4);
+            categories.forEach((category) => {
                 expect(category).toMatchObject({
                     slug: expect.any(String),
                     description: expect.any(String),
                 });
+            });
+        });
+    });
+    test('POST - status: 201, responds with a category object after it has just been posted', () => {
+        return request.agent(app)
+        .post('/api/categories')
+        .expect(201)
+        .send({ 
+            slug: 'boxing', 
+            description: 'everyone has a punchers chance, come along and test your mettle!', })
+        .then(({ body: { category }}) => {
+            expect(category).toEqual({
+            slug: "boxing",
+            description: "everyone has a puncher's chance, come along and test your mettle!"
             });
         });
     });
@@ -387,7 +398,6 @@ describe('/api/reviews/:review_id/comments', () => {
             
 });
 
-<<<<<<< HEAD
 describe('/api/comments', () => {
     test('DELETE - status: 204, should respond with no content after deleting a given comment (:comment_id)', () => {
         return request.agent(app)
@@ -445,6 +455,21 @@ describe('/api/users', () => {
         .expect(200)
         .then(({ body : { users }}) => {
             expect(users.length).toEqual(4);
+            expect(users).toEqual([
+                    {
+                      "username": "philippaclaire9"
+                    },
+                    {
+                      "username": "mallionaire"
+                    },
+                    {
+                      "username": "bainesface"
+                    },
+                    {
+                      "username": "dav3rid"
+                    }
+                  ]
+            )
         })   
     });
     test('GET - status: 200, responds with a user object, searched by its username', () => {
@@ -468,29 +493,5 @@ describe('/api/users', () => {
         });
     });
 })
-=======
-describe('/api/comments... & /api/users...', () => {
-    test('DELETE - status: 204, should respond with no content after deleting a given comment (:comment_id)', () => {
-        return request.agent(app)
-        .delete('/api/comments/7')
-        .expect(204)
-        .then(({ body : { deleted }}) => {
-            expect(deleted).toEqual({author: "bainesface", 
-            body: "Great game, wish I could play it all-day!",
-            comment_id: 7,
-            review_id: 2,
-            votes: 0,});
-        })
-    });
-})
 
-
-    // {
-    //     comment_id: 6,
-    //     author: "philippaclaire9",
-    //     created_at: "2021-03-27 19:49:48.11",
-    //     body: "Not sure about dogs, but my cat likes to get involved with board games, the boxes are their particular favourite",
-    //     votes: 10, 
-    //     review_id: 3
-    // }
->>>>>>> 918d02868828113a376a589938c80f32256586fa
+// describe('/')

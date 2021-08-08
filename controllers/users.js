@@ -1,7 +1,6 @@
 const { fetchAllUsers, fetchUser } = require('../models/users');
 
 exports.getAllUsers = (req, res, next) => {
-    console.log(req.url)
     fetchAllUsers().then((users) => {
         res.status(200).send({ users });
     }).catch(next);
