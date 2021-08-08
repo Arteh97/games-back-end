@@ -1,6 +1,6 @@
 const format = require('pg-format');
 const db = require('../../db/connection.js');
-const { formatData } = require('../../utils/data-manipulation');
+// const { formatData } = require('../../utils/data-manipulation');
 
 
 const dropTables = async () => {
@@ -44,45 +44,52 @@ const createTables = async () => {
 }
 
 const insertCategories = async (categoryData) => {
-    const formattedCategoryData = formatData(categoryData) //formatData returns array of property values
+    // const formattedCategoryData = formatData(categoryData, ['slug', 'description']) //formatData returns array of property values
     const queryStr = format(`INSERT INTO categories
         (slug, description)
         VALUES
         %L 
-         RETURNING *;`, formattedCategoryData);
+         RETURNING *;`, categoryData.map(({ slug, description }) => [slug, description]));
           return await (await db.query(queryStr)).rows;
 };
 
 const insertUsers = async (userData) => {
-    const formattedUserData = formatData(userData)
+    // const formattedUserData = formatData(userData, ['username', 'avatar_url', 'name'])
     const queryStr = format(`INSERT INTO users
     (username, avatar_url, name)
     VALUES
     %L
-    RETURNING *;`, formattedUserData);
+    RETURNING *;`, userData.map(({ username, avatar_url, name }) => 
+    [username, avatar_url, name])
+    );
     const result =  await db.query(queryStr);
     return result.rows;
 }
 
 const insertReviews = async (reviewData) => {
     // console.log(reviewData);
-    const formattedReviewData = formatData(reviewData);
+    // const formattedReviewData = formatData(reviewData, ['title', 'designer', 'owner', 'review_img_url', 'review_body', 'category', 'votes']);
     const queryStr = format(`INSERT INTO reviews
     (title, designer, owner, review_img_url, review_body, category, created_at, votes)
     VALUES
     %L
-    RETURNING *;`, formattedReviewData);
+    RETURNING *;`, reviewData.map(({title, designer, owner, review_img_url = `https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg`,
+        review_body, category, created_at, votes = 0,}) =>
+        [title, designer, owner, review_img_url, review_body, category, created_at, votes])
+    );
     const result = await db.query(queryStr);
     return result.rows;
 }
 
 const insertComments = async (newCommentData) => {
-    const formattedCommentData = formatData(newCommentData);
+    // const formattedCommentData = formatData(newCommentData, ['body', 'votes', 'author', 'review_id']);
     const queryStr = format(`INSERT INTO comments
-    (body, votes, created_at, author, review_id)
+    (body, author, review_id, votes, created_at)
     VALUES
     %L
-    RETURNING *;`, formattedCommentData);
+    RETURNING *;`, newCommentData.map(({ body, author, review_id, votes = 0, created_at }) => 
+    [body, author, review_id, votes, created_at,]) 
+    );
     const result = await db.query(queryStr);
     return result.rows;
 }

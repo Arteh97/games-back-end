@@ -8,7 +8,7 @@ const createRefObj = (arr, ref1, ref2) => {
 };
 
 
-const formatData = (arrOfObjs) => {
+const formatData = (arrOfObjs, columnOrder) => {
     const copy = [...arrOfObjs];
     const result = copy.map((object) => {
         let newArr = []
@@ -33,6 +33,10 @@ const lowerCaseOrder = order.toLowerCase();
     ? lowerCaseOrder
     : Promise.reject({ status: 400, msg: 'Invalid order query' });
 };
+
+// const checkExists = (item) => { // check if user, comment or review exists
+
+// }
 
 
 module.exports = { formatData, createRefObj, checkSort, checkOrder };

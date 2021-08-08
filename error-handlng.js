@@ -1,5 +1,5 @@
 exports.error500 = () => {
-    console.log(err, '<-- unhandled error');
+    console.log(err.message, '<-- unhandled error');
     res.status(500).send({ msg: "Internal Server Error" })
 };
 
@@ -18,7 +18,7 @@ exports.psqlErrors = (err, req, res, next) => {
         '42703': { msg: 'Bad request', status: 400 },
         '22P02': {  msg: 'Invalid input', status: 400},
         '23502': { msg: 'Invalid request', status: 422 },
-        '23503': { msg: 'User/Results not found', status: 404 },
+        '23503': { msg: 'Resource not found', status: 404 },
         '23505': { msg: 'Relation already exists', status: 400 },
     }
     if (err.code) {

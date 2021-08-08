@@ -1,4 +1,6 @@
-const { formatData, createRefObj} = require('../db/utils/data-manipulation.js');
+
+const { expect } = require('@jest/globals');
+const { formatData, createRefObj} = require('../utils/data-manipulation');
 
 describe('formatData()', () => {
     test('Returns new array', () => {
@@ -22,12 +24,12 @@ describe('formatData()', () => {
         expect(formatData(input)).toEqual([['euro game', 'Abstact games that involve little luck'], ["children's games", 'Games suitable for children'], ['euro game', 'Abstact games that involve little luck']]);
     })
     it('should not mutate the original data', () => {
-        
+        const input = [{ slug: 'euro game', description: 'Abstact games that involve little luck' }]
+        expect(formatData(input)).not.toBe(input);
+
+        })
         
     });
-
-});
-
 describe('create reference object', () => {
     test('should return an object', () => {
         const input = [{}];
@@ -50,7 +52,19 @@ describe('create reference object', () => {
           expect(createRefObj(input, 'body', 'votes')).toEqual({'I loved this game too': 17, 'I loved this game too!': 16});
     });
     test('should not mutate the original input', () => {
-
-        
-    });
+        const input = [{
+            body: 'I loved this game too',
+            belongs_to: 'Jenga',
+            created_by: 'bainesface',
+            votes: 17,
+            created_at: new Date(1511354613389)
+          }, {
+            body: 'I loved this game too!',
+            belongs_to: 'Jenga',
+            created_by: 'bainesface',
+            votes: 16,
+            created_at: new Date(1511354613389)
+          }]
+          expect(createRefObj(input, 'body', 'votes')).not.toBe(input);
+          })
 })

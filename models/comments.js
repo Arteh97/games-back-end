@@ -45,3 +45,22 @@ const validOrder = await checkOrder(order);
 
 };
 
+exports.removeComment = async (comment_id) => {
+    return db.query(`DELETE from comments
+    WHERE comment_id = $1 RETURNING *;`, [comment_id]).then((comment) => {
+        const deleted = comment.rows
+        if(!deleted.length) return Promise.reject({ status: 404, msg: "Comment not found"})
+        return deleted;
+    });
+};
+
+exports.patchComment = async (comment_id, inc_votes) => {
+    const updated = await db.query(`UPDATE comments SET votes = votes + $1
+    WHERE comment_id = $2 RETURNING *;`, [inc_votes, comment_id])
+    .then((result) => result.rows);
+
+    if (!updated.length) return Promise.reject({ status: 404, msg: "Comment not found"});
+
+    return updated;
+}
+

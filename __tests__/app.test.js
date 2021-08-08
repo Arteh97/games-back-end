@@ -1,20 +1,21 @@
 const app = require('../app');
 const request = require('supertest');
 const db = require('../db/connection.js');
-const { copyWithin } = require('../db/data/test-data/categories');
+const endpoints = require('../endpoints.json');
 const testData = require('../db/data/test-data/index.js');
 const  seed  = require('../db/seeds/seed.js');
+const { expect, describe } = require('@jest/globals');
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
-describe('/api, table seeding and invalid path handling', () => {
-        test('should respond with "all OK from the api router', () => {
+describe('/api and invalid path handling', () => {
+        test('should respond with a JSON of all available endpoints', () => {
         return request(app)
         .get('/api')
         .expect(200)
         .then((response) => {
-            expect(response.body).toEqual({ "msg": 'All OK from /api !' })
+            expect(response.body).toEqual(endpoints);
         });
         });
         test("GET - status: 404,  should respond with 'Invalid Path' if given an incorrect path",    () => {
@@ -25,57 +26,43 @@ describe('/api, table seeding and invalid path handling', () => {
             expect(msg).toEqual("Invalid Path")
         })
         });
-        test('GET - status: 200, responds with an array the newly inserted category objects', () => {
-    return request(app)
-    .get('/api/categories')
-    .expect(200)
-    .then((response) => {
-        // console.log(response.body[0], '<-- first entry', response.body.length, '<-- array length');
-        expect(response.body).toHaveLength(4);
-        response.body.forEach((category) => {
-            expect(category).toMatchObject({
-                slug: expect.any(String),
-                description: expect.any(String),
+});
+
+describe('/api/categories', () => {
+    test('GET - status: 200, responds with an array of the newly inserted category objects', () => {
+        return request(app)
+        .get('/api/categories')
+        .expect(200)
+        .then((response) => {
+            expect(response.body).toHaveLength(4);
+            response.body.forEach((category) => {
+                expect(category).toMatchObject({
+                    slug: expect.any(String),
+                    description: expect.any(String),
+                });
             });
         });
     });
-        });
-        test('GET - status: 200, responds with an array of the newly inserted review objects', () => {
-    return request(app)
-    .get('/api/reviews')
-    .expect(200)
-    .then(({ body: { reviews }}) => {
-        // console.log(reviews.length, '<-- array length', reviews[0], '<-- first entry');
-        expect(reviews).toHaveLength(13);
-        reviews.forEach((review) => {
-            expect(review).toMatchObject({
-                title: expect.any(String),
-                designer: expect.any(String),
-                owner: expect.any(String),
-                review_img_url: expect.any(String),
-                review_body: expect.any(String),
-                category: expect.any(String),
-                votes: expect.any(Number),
-                });
-            });
-        }); 
-        });
 });
-// all tests passing!
 
-// Happy Path then Sad Path
-
-// error handling for - a review that doesn't exist, invalid syntax etc...
 describe('/api/reviews', () => {
         test('GET - status: 200, responds with an array of review objects', () => {
-        // should accept queries sort_by, order, category
-        // error handle for if any of the query is invalid
         return request(app)
         .get('/api/reviews')
         .expect(200)
-        .then((response) => {
-            // console.log(response.body)
-            ;expect(response.body.reviews.length).toEqual(13);
+        .then(({ body: { reviews }}) => {
+            ;expect(reviews.length).toEqual(13);
+            reviews.forEach((review) => {
+                expect(review).toMatchObject({
+                   title: expect.any(String),
+                   designer: expect.any(String),
+                   owner: expect.any(String),
+                   review_img_url: expect.any(String),
+                   review_body: expect.any(String),
+                   category: expect.any(String),
+                   votes: expect.any(Number),
+                });
+            });
         });
         });
         test('GET - status: 200, responds with reviews sorted by "created_at" descending (default)', () => {
@@ -250,9 +237,6 @@ describe('/api/reviews/:review_id', () => {
         });
 });
 
-// use jest matcher - expect().toBeSortedBy('column', { asc/desc: true/false });
-
-
 describe('/api/reviews/:review_id/comments', () => {
         test('GET - status: 200, responds with all comments associated with the given review_id', () => {
             return request(app)
@@ -351,7 +335,6 @@ describe('/api/reviews/:review_id/comments', () => {
              })
           .expect(201)
           .then(({ body: { comment }}) => {
-              console.log(comment);
               expect(comment[0]).hasOwnProperty('created_at');
               expect(comment[0]).toMatchObject({ author: "bainesface", 
               body: "Great game, wish I could play it all-day!",
@@ -361,8 +344,7 @@ describe('/api/reviews/:review_id/comments', () => {
                 });
             });
         });
-        // inavlid/non-existent review_id, non-existent author, invalid request body
-        test('ERROR -  status: 404, responds with "User/Results not found" when review_id is invalid', () => {
+        test('ERROR -  status: 404, responds with "Resource not found" when review_id is invalid', () => {
             return request.agent(app)
             .post(`/api/reviews/3000/comments`)
             .send({
@@ -371,7 +353,7 @@ describe('/api/reviews/:review_id/comments', () => {
             })
             .expect(404)
             .then((error) => {
-                expect(error.body).toEqual({ msg: "User/Results not found"});
+                expect(error.body).toEqual({ msg: "Resource not found"});
             })
         });
         test('ERROR - status: 400, responds with "Invalid input" when passed an invalid/empty body', () => {
@@ -386,7 +368,7 @@ describe('/api/reviews/:review_id/comments', () => {
                 expect(error.body).toEqual({ msg: "Comment section is empty"});
             })
         })
-        test('ERROR - status 404, responds with "User/Results not found" if given a author that does not exist ini the database ', () => {
+        test('ERROR - status 404, responds with "Resource not found" if given a author that does not exist ini the database ', () => {
             return request.agent(app)
             .post(`/api/reviews/3/comments`)
             .send({
@@ -395,10 +377,89 @@ describe('/api/reviews/:review_id/comments', () => {
             })
             .expect(404)
             .then((error) => {
-                expect(error.body).toEqual({ msg: "User/Results not found"});
+                expect(error.body).toEqual({ msg: "Resource not found"});
             })
         });
             
 });
 
-// describe('GET - /api - all paths')
+describe('/api/comments', () => {
+    test('DELETE - status: 204, should respond with no content after deleting a given comment (:comment_id)', () => {
+        return request.agent(app)
+        .delete('/api/comments/1')
+        .expect(204)
+        .then(() => {
+            return request.agent(app)
+            .delete('/api/comments/1')
+            .expect(404)
+            .then((error) => {
+                expect(error.body).toEqual({ msg: "Comment not found"});
+            })
+            })
+        });
+    test('PATCH - status: 201, should respond with a comment after its vote count has been updated', () => {
+        return request.agent(app)
+        .patch('/api/comments/2')
+        .expect(201)
+        .send({ inc_votes: 1 })
+        .then(({ body: { comment }}) => {
+            expect(comment[0]).toMatchObject({
+                author: "mallionaire",
+                body: "My dog loved this game too!",
+                comment_id: 2,
+                created_at: "2021-01-18T10:09:05.410Z",
+                review_id: 3,
+                votes: 14,
+            });
+        });
+    });
+    test('PATCH - status: 404, should responds with "Comment not found" if comment doesnt exist in the database', () => {
+        return request(app)
+        .patch('/api/comments/1000')
+        .send({ inc_votes: 1 })
+        .expect(404)
+        .then((error) => {
+            expect(error.body).toEqual({ msg: "Comment not found"});
+        });
+    });
+    test('PATCH - status: 400, should respons with "Invalid input" if inc_votes data type is invalid', () => {
+        return request(app)
+        .patch('/api/comments/2')
+        .send({ inc_votes: "ssadf" })
+        .expect(400)
+        .then((error) => {
+            expect(error.body).toEqual({ msg: "Invalid input"})
+        });
+    });
+});
+
+describe('/api/users', () => {
+    test('GET - status: 200, responds with an array of usernames', () => {
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(({ body : { users }}) => {
+            expect(users.length).toEqual(4);
+        })   
+    });
+    test('GET - status: 200, responds with a user object, searched by its username', () => {
+        return request(app)
+        .get('/api/users/bainesface')
+        .expect(200)
+        .then(({ body: { user }}) => {
+            expect(user[0]).toMatchObject({
+                username: 'bainesface',
+                avatar_url: 'https://avatars2.githubusercontent.com/u/24394918?s=400&v=4',
+                name: 'sarah',
+            })
+        })
+    })
+    test('ERROR - status: 404, responds with "User not found" if username does not exist in the database ', () => {
+        return request(app)
+        .get('/api/users/arteh97')
+        .expect(404)
+        .then((error) => {
+            expect(error.body).toEqual({ msg: "User not found"});
+        });
+    });
+})

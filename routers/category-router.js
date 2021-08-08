@@ -1,8 +1,8 @@
-const catRouter = require('express').Router();
+const categoryRouter = require('express').Router();
 const { getCategories } = require('../controllers/categories');
 
 
-catRouter.get('/', getCategories);
+categoryRouter.get('/', getCategories);
 
 
-module.exports = catRouter;
+module.exports = categoryRouter;

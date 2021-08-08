@@ -1,16 +1,20 @@
 const express = require('express');
 const apiRouter = express.Router();
-const catRouter =  require('./category-router');
+const categoryRouter =  require('./category-router');
 const reviewRouter = require('./review-router');
+const commentRouter = require('./comment-router');
+const userRouter = require('./user-router');
 const endpoints = require('../endpoints.json');
 
 
 apiRouter.get('/', (req, res) => {
     res.status(200).send(endpoints);
 });
-
-apiRouter.use('/categories', catRouter);
-
 apiRouter.use('/reviews', reviewRouter);
+apiRouter.use('/comments', commentRouter);
+apiRouter.use('/categories', categoryRouter);
+apiRouter.use('/users', userRouter);
+
+
 
 module.exports = apiRouter;
