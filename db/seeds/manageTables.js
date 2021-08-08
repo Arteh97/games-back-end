@@ -14,11 +14,11 @@ const createTables = async () => {
 
     await db.query(`CREATE TABLE categories
     (slug VARCHAR(200) NOT NULL PRIMARY KEY,
-    description TEXT);`)
+    description TEXT NOT NULL);`)
 
     await db.query(`CREATE TABLE users
     (username VARCHAR(200) NOT NULL PRIMARY KEY,
-    avatar_url TEXT,
+    avatar_url TEXT NOT NULL,
     name VARCHAR(200));`)
 
 
@@ -26,11 +26,11 @@ const createTables = async () => {
     (review_id SERIAL PRIMARY KEY,
     title VARCHAR(100) NOT NULL,
     review_body TEXT NOT NULL,
-    designer TEXT,
+    designer TEXT NOT NULL,
     review_img_url TEXT DEFAULT 'https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg',
     votes INT DEFAULT 0,
     category VARCHAR(200) REFERENCES categories(slug),
-    owner VARCHAR(200) REFERENCES users(username) ON DELETE CASCADE,
+    owner VARCHAR(200) NOT NULL REFERENCES users(username) ON DELETE CASCADE,
     created_at TIMESTAMP);`)
 
     await db.query(`CREATE TABLE comments
@@ -74,7 +74,7 @@ const insertReviews = async (reviewData) => {
     VALUES
     %L
     RETURNING *;`, reviewData.map(({title, designer, owner, review_img_url = `https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg`,
-        review_body, category, created_at, votes = 0,}) =>
+        review_body, category, created_at = new Date(created_at), votes = 0,}) =>
         [title, designer, owner, review_img_url, review_body, category, created_at, votes])
     );
     const result = await db.query(queryStr);

@@ -1,7 +1,8 @@
 const { addComment, selectComments, removeComment, patchComment } = require('../models/comments');
-
+const { getReviewById } = require('./reviews');
 exports.getCommentsByReviewId = (req, res, next) => {
     const { review_id } = req.params;
+
     const { sort_by, order } = req.query;
     selectComments(review_id, sort_by, order).then((comments) => {
         res.status(200).send({ comments });

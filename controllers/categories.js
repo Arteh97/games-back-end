@@ -9,7 +9,6 @@ exports.getCategories =  async (req, res, next) => {
 
 exports.postCategory = async (req, res, next) => {
     const { slug, description } = req.body;
-    console.log(slug, description);
     addCategory(slug, description).then(([category]) => {
         res.status(201).send({ category });
     }).catch(next);

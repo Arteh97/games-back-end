@@ -19,9 +19,3 @@ exports.addCategory = async (slug, description) => {
     }); 
     return posted;
 }
-
-exports.removeCategory = async (slug) => {
-    return db.query(`DELETE * FROM categories WHERE slug = $1 RETURNING *;`, [slug]).then((response) => {
-        return response.rows;
-    });
-} 

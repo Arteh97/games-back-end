@@ -1,6 +1,14 @@
+const { title } = require('process');
 const db = require('../db/connection');
 const { checkSort, checkOrder } = require('../utils/data-manipulation');
 
+
+exports.addReview = async (formatted) => {
+  const [ values ] = formatted;
+  console.log(values);
+  return db.query(`INSERT INTO reviews (owner, title, review_body, designer, category)
+  VALUES ($1, $2, $3, $4, $5) RETURNING *;`, values).then((review) => review.rows);
+}
 
 
 exports.selectReviewById = async (review_id) => {
@@ -72,7 +80,6 @@ const reviews = await db.query(queryStr, queryVals)
 return reviews;
 
 };
-
 
 
 
