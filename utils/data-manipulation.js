@@ -9,6 +9,7 @@ const createRefObj = (arr, ref1, ref2) => {
 
 
 const formatData = (arrOfObjs, columnOrder) => {
+<<<<<<< HEAD
     const copy = [...arrOfObjs];
     const result = copy.map((object) => {
         let newArr = []
@@ -19,6 +20,10 @@ const formatData = (arrOfObjs, columnOrder) => {
         return newArr;
     })
     return result;
+=======
+arrOfObjs.map(({...columnOrder}) => [...columnOrder]);
+console.log(arrOfObjs[0]);
+>>>>>>> 918d02868828113a376a589938c80f32256586fa
 }
 
 const checkSort = (sort_by, columns) => {

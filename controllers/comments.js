@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 const { addComment, selectComments, removeComment, patchComment } = require('../models/comments');
+=======
+const { addComment, selectComments, removeComment } = require('../models/comments');
+>>>>>>> 918d02868828113a376a589938c80f32256586fa
 
 exports.getCommentsByReviewId = (req, res, next) => {
     const { review_id } = req.params;
@@ -20,6 +24,7 @@ exports.postComment = (req, res, next) => {
 
 exports.deleteComment = (req, res, next) => {
     const { comment_id } = req.params;
+<<<<<<< HEAD
     removeComment(comment_id).then(() => {
         res.status(204).send({});
     }).catch(next);
@@ -32,3 +37,9 @@ exports.updateComment = (req, res, next) => {
         res.status(201).send({ comment });
     }).catch(next)
 }
+=======
+    removeComment(comment_id).then((deleted) => {
+        res.status(204).send({ deleted });
+    }).catch(next);
+}
+>>>>>>> 918d02868828113a376a589938c80f32256586fa

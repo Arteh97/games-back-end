@@ -9,7 +9,11 @@ const { expect, describe } = require('@jest/globals');
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
+<<<<<<< HEAD
 describe('/api and invalid path handling', () => {
+=======
+describe('/api, table seeding and invalid path handling', () => {
+>>>>>>> 918d02868828113a376a589938c80f32256586fa
         test('should respond with a JSON of all available endpoints', () => {
         return request(app)
         .get('/api')
@@ -383,6 +387,7 @@ describe('/api/reviews/:review_id/comments', () => {
             
 });
 
+<<<<<<< HEAD
 describe('/api/comments', () => {
     test('DELETE - status: 204, should respond with no content after deleting a given comment (:comment_id)', () => {
         return request.agent(app)
@@ -463,3 +468,29 @@ describe('/api/users', () => {
         });
     });
 })
+=======
+describe('/api/comments... & /api/users...', () => {
+    test('DELETE - status: 204, should respond with no content after deleting a given comment (:comment_id)', () => {
+        return request.agent(app)
+        .delete('/api/comments/7')
+        .expect(204)
+        .then(({ body : { deleted }}) => {
+            expect(deleted).toEqual({author: "bainesface", 
+            body: "Great game, wish I could play it all-day!",
+            comment_id: 7,
+            review_id: 2,
+            votes: 0,});
+        })
+    });
+})
+
+
+    // {
+    //     comment_id: 6,
+    //     author: "philippaclaire9",
+    //     created_at: "2021-03-27 19:49:48.11",
+    //     body: "Not sure about dogs, but my cat likes to get involved with board games, the boxes are their particular favourite",
+    //     votes: 10, 
+    //     review_id: 3
+    // }
+>>>>>>> 918d02868828113a376a589938c80f32256586fa

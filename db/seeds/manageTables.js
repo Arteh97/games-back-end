@@ -44,7 +44,11 @@ const createTables = async () => {
 }
 
 const insertCategories = async (categoryData) => {
+<<<<<<< HEAD
     // const formattedCategoryData = formatData(categoryData, ['slug', 'description']) //formatData returns array of property values
+=======
+    const formattedCategoryData = formatData(categoryData, [slug, description]) //formatData returns array of property values
+>>>>>>> 918d02868828113a376a589938c80f32256586fa
     const queryStr = format(`INSERT INTO categories
         (slug, description)
         VALUES
@@ -54,7 +58,11 @@ const insertCategories = async (categoryData) => {
 };
 
 const insertUsers = async (userData) => {
+<<<<<<< HEAD
     // const formattedUserData = formatData(userData, ['username', 'avatar_url', 'name'])
+=======
+    const formattedUserData = formatData(userData, [username, avatar_url, name])
+>>>>>>> 918d02868828113a376a589938c80f32256586fa
     const queryStr = format(`INSERT INTO users
     (username, avatar_url, name)
     VALUES
@@ -68,7 +76,11 @@ const insertUsers = async (userData) => {
 
 const insertReviews = async (reviewData) => {
     // console.log(reviewData);
+<<<<<<< HEAD
     // const formattedReviewData = formatData(reviewData, ['title', 'designer', 'owner', 'review_img_url', 'review_body', 'category', 'votes']);
+=======
+    const formattedReviewData = formatData(reviewData, [title, designer, owner, review_img_url, review_body, category, votes]);
+>>>>>>> 918d02868828113a376a589938c80f32256586fa
     const queryStr = format(`INSERT INTO reviews
     (title, designer, owner, review_img_url, review_body, category, created_at, votes)
     VALUES
@@ -82,7 +94,11 @@ const insertReviews = async (reviewData) => {
 }
 
 const insertComments = async (newCommentData) => {
+<<<<<<< HEAD
     // const formattedCommentData = formatData(newCommentData, ['body', 'votes', 'author', 'review_id']);
+=======
+    const formattedCommentData = formatData(newCommentData, [body, votes, author, review_id]);
+>>>>>>> 918d02868828113a376a589938c80f32256586fa
     const queryStr = format(`INSERT INTO comments
     (body, author, review_id, votes, created_at)
     VALUES
