@@ -1,3 +1,4 @@
+
 const { addReview, selectReviewById, patchReview, selectReviews } = require('../models/reviews');
 
 
@@ -26,14 +27,11 @@ exports.updateReview = async (req, res, next) => {
 } 
 
 exports.postReview = async (req, res, next) => {
-    const copy = [req.body];
-   const formatted = await copy.map(({ owner, title, review_body, designer, category }) => [owner, title, review_body, designer, category]);
-   addReview(formatted).then((review) => {
-       res.status(201).send({ review });
-       console.log(review)
-   })
-    // res.status(500).send("not working yet")
+    const { body } = req;
+    addReview(body).then((review_id) => {
+        selectReviewById(review_id).then((review) => {
+            res.status(201).send({ review })
+        })
+        .catch(next)
+    })
 }
-
-
-

@@ -163,6 +163,7 @@ describe('/api/reviews', () => {
             })
             .expect(201)
             .then(({ body: { review }}) => {
+                console.log(review);
                 expect(review).toEqual({
                     review_id: 14,
                     title: "Nice game, will recommend to my friends",

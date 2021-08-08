@@ -1,14 +1,16 @@
-const { title } = require('process');
 const db = require('../db/connection');
 const { checkSort, checkOrder } = require('../utils/data-manipulation');
 
 
-exports.addReview = async (formatted) => {
-  const [ values ] = formatted;
-  console.log(values);
-  return db.query(`INSERT INTO reviews (owner, title, review_body, designer, category)
-  VALUES ($1, $2, $3, $4, $5) RETURNING *;`, values).then((review) => review.rows);
-}
+  exports.addReview = async ({ owner, title, review_body, designer, category }) => {
+   const added = await db.query(`INSERT INTO reviews (owner, title, review_body, designer, category)
+    VALUES ($1, $2, $3, $4, $5) RETURNING *;`, [owner, title, review_body, designer, category]).then((review) => {
+      const { review_id } = review.rows[0];
+      console.log(review_id) 
+      return review_id; 
+    });
+    return added;
+  };
 
 
 exports.selectReviewById = async (review_id) => {
@@ -16,7 +18,7 @@ exports.selectReviewById = async (review_id) => {
     AS comment_count 
     FROM reviews LEFT JOIN comments 
     ON reviews.review_id = comments.review_id 
-    WHERE reviews.review_id = $1 GROUP BY reviews.review_id LIMIT 1;`;
+    WHERE reviews.review_id = $1 GROUP BY reviews.review_id;`;
 
     const review = await db.query(queryStr, [review_id]).then((review) => {
       return review.rows;
@@ -80,28 +82,3 @@ const reviews = await db.query(queryStr, queryVals)
 return reviews;
 
 };
-
-
-
-
-
-
-
-
-
-
-
-    // // const review = db.query('SELECT * FROM reviews where review_id = $1;', [review_id]).then((result) => {
-    //     // return result.rows;
-    //     return db.query('SELECT reviews.* , COUNT(comments.review_id) AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id GROUP BY reviews.review_id;').then((result) => {.then((result) => {[
-    //             console.log(results.rows)
-
-    //     })
-
-        // ]})
-        // }).then((result) => {
-        
-    // })
-    
-
-// 'SELECT review_id FROM comments LEFT JOIN reviews on reviews.review_id = comments.review_id GROUP BY reviews.review_id'

@@ -1,5 +1,4 @@
 const { addComment, selectComments, removeComment, patchComment } = require('../models/comments');
-const { getReviewById } = require('./reviews');
 exports.getCommentsByReviewId = (req, res, next) => {
     const { review_id } = req.params;
 
