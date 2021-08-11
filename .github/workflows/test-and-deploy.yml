@@ -29,18 +29,17 @@ jobs:
         run: npm ci
 
       - name: Run tests
-        run: PGDATABASE=nc_games_test PGUSER=postgres PGPASSWORD=Ncoder97 npm t
+        run: PGDATABASE=nc_games_test PGUSER=postgres PGPASSWORD=Ncoder97 npm t       
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
 
-# deploy:
-#     runs-on: ubuntu-latest
-#     needs: test
-#     steps:
-#         name: Checkout Repo
-#         uses: actions/checkout@v
-#         name: Deploy to Heroku
-#         uses: akhileshns/heroku-deploy@v3.12.12
-#         with:
-#             heroku_api_key: 40116102-5c84-4e26-84ba-ce6a3a77c2ba
-#             heroku_app_name: artehs-games1997
-#             heroku_email: artehrush@gmail.com
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: 40116102-5c84-4e26-84ba-ce6a3a77c2ba
+          heroku_app_name: artehs-games1997
+          heroku_email: artehrush@gmail.com
 
