@@ -14,6 +14,17 @@
       ]
     }
   },
+  "POST /api/categories": {
+    "description": "serves an array containing a category object after it has been posted",
+    "exampleResponse": {
+      "category" : [
+        {
+          "slug": "boxing",
+            "description": "everyone has a punchers chance, come along and test your mettle!"
+        }
+      ]
+    }
+  },
   "GET /api/reviews": {
     "description": "serves an array of all reviews",
     "queries": ["category", "sort_by", "order"],
@@ -31,6 +42,26 @@
       ]
     } 
   },
+  "POST /api/reviews": {
+  "description": "serves an array containing a review after it has been posted",
+  "exampleResponse": {
+    "review": [
+      {
+        "review_id": 14,
+        "title": "Nice game, will recommend to my friends",
+        "designer": "Leslie Scott",
+        "owner": "bainesface",
+        "review_img_url":
+        "https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg",
+        "review_body": "I enjoyed this game very much, 10/10!",
+        "category": "euro game",
+        "created_at": null,
+        "votes": 0,
+        "comment_count": "0"
+      }
+    ]
+  }
+},
   "GET /api/reviews/:review_id": {
     "description": "serves an array containing the review that has been searched for by it's :id",
     "queries": [":review_id"],
@@ -53,7 +84,7 @@
   },
   "PATCH /api/reviews/:review_id": {
     "description": "serves a review after it's vote count has been updated",
-    "queries": [":review_id"],
+    "queries": [":review_id", "inc_votes"],
     "exampleResponse": {
       "review": [
         {

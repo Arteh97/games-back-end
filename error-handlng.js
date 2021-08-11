@@ -1,11 +1,8 @@
-exports.error500 = () => {
-    console.log(err.message, '<-- unhandled error');
-    res.status(500).send({ msg: "Internal Server Error" })
-};
+
 
 exports.invalidPath = (req, res, next) => {
-    res.status(404).send({ msg: "Invalid Path"});
-};
+  res.status(404).send({ msg: "Invalid Path"})
+}
 
 exports.customErrors = (err, req, res, next) => {
     if (err.status) {
@@ -16,7 +13,7 @@ exports.customErrors = (err, req, res, next) => {
 exports.psqlErrors = (err, req, res, next) => {
     const errCodes = {
         '42703': { msg: 'Bad request', status: 400 },
-        '22P02': {  msg: 'Invalid input', status: 400},
+        '22P02': { msg: 'Invalid input', status: 400},
         '23502': { msg: 'Invalid request', status: 422 },
         '23503': { msg: 'Resource not found', status: 404 },
         '23505': { msg: 'Relation already exists', status: 400 },
@@ -33,3 +30,7 @@ exports.psqlErrors = (err, req, res, next) => {
 
 }
 
+exports.error500 = () => {
+    console.log(err.message, '<-- unhandled error');
+    res.status(500).send({ msg: "Internal Server Error" })
+};
