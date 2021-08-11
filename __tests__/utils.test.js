@@ -3,28 +3,23 @@ const { expect } = require('@jest/globals');
 const { formatData, createRefObj} = require('../utils/data-manipulation');
 
 describe('formatData()', () => {
-    test('Returns new array', () => {
-        const input = [{}];
-        console.log(formatData(input), '<-- output')
-        expect(formatData(input)).not.toBe(input);
-        expect(Array.isArray(formatData(input)));
-    })
     test('Returns nested array of object values for single object', () => {
-        const input = [{ slug: 'euro game', description: 'Abstact games that involve little luck' }]
-        expect(formatData(input)).toEqual([['euro game', 'Abstact games that involve little luck']])
+        const input = [{ slug: 'euro game', description: 'Abstact games that involve little luck' }];
+        expect(formatData(input, ['slug', 'description'])).toEqual([['euro game', 'Abstact games that involve little luck']]);
     })
     test('Returns nested array of object values for multiple objects', () => {
-        const input = [{ slug: 'euro game', description: 'Abstact games that involve little luck' }, { slug: "children's games", description: 'Games suitable for children' }]
-        expect(formatData(input)).toEqual([['euro game', 'Abstact games that involve little luck'], [`children's games`, `Games suitable for children`]])
+        const input = [{ slug: 'euro game', description: 'Abstact games that involve little luck' }, { slug: "children's games", description: 'Games suitable for children' }];
+
+        expect(formatData(input, ['slug', 'description'])).toEqual([['euro game', 'Abstact games that involve little luck'], [`children's games`, `Games suitable for children`]]);
     })
     test('Returns nested array of object values for objects with more properties', () => {
         const input = [{ slug: 'euro game', description: 'Abstact games that involve little luck' }, { slug: "children's games", description: 'Games suitable for children' },{ slug: 'euro game', description: 'Abstact games that involve little luck' }];
 
-        expect(formatData(input)).toEqual([['euro game', 'Abstact games that involve little luck'], ["children's games", 'Games suitable for children'], ['euro game', 'Abstact games that involve little luck']]);
+        expect(formatData(input, ['slug', 'description'])).toEqual([['euro game', 'Abstact games that involve little luck'], ["children's games", 'Games suitable for children'], ['euro game', 'Abstact games that involve little luck']]);
     })
     it('should not mutate the original data', () => {
         const input = [{ slug: 'euro game', description: 'Abstact games that involve little luck' }]
-        expect(formatData(input)).not.toBe(input);
+        expect(formatData(input, ['slug', 'description'])).not.toBe(input);
 
         })
         

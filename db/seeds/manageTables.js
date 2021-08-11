@@ -1,6 +1,6 @@
 const format = require('pg-format');
 const db = require('../../db/connection.js');
-// const { formatData } = require('../../utils/data-manipulation');
+const { formatData } = require('../../utils/data-manipulation');
 
 
 const dropTables = async () => {
@@ -44,57 +44,46 @@ const createTables = async () => {
 }
 
 const insertCategories = async (categoryData) => {
-    // const formattedCategoryData = formatData(categoryData, ['slug', 'description']) //formatData returns array of property values
+    const formattedCategoryData = formatData(categoryData, ['slug', 'description'])
     const queryStr = format(`INSERT INTO categories
-        (slug, description)
-        VALUES
-        %L 
-         RETURNING *;`, categoryData.map(({ slug, description }) => [slug, description]));
-          return await (await db.query(queryStr)).rows;
+    (slug, description)
+    VALUES
+    %L 
+    RETURNING *;`, formattedCategoryData
+    );
+    return await (await db.query(queryStr)).rows;
 };
-
 const insertUsers = async (userData) => {
-    // const formattedUserData = formatData(userData, ['username', 'avatar_url', 'name'])
+    const formattedUserData = formatData(userData, ['username', 'avatar_url', 'name'])
     const queryStr = format(`INSERT INTO users
     (username, avatar_url, name)
     VALUES
     %L
-    RETURNING *;`, userData.map(({ username, avatar_url, name }) => 
-    [username, avatar_url, name])
+    RETURNING *;`, formattedUserData
     );
-    const result =  await db.query(queryStr);
-    return result.rows;
+    return await (await db.query(queryStr)).rows
 }
 
 const insertReviews = async (reviewData) => {
-    // console.log(reviewData);
-    // const formattedReviewData = formatData(reviewData, ['title', 'designer', 'owner', 'review_img_url', 'review_body', 'category', 'votes']);
+    const formattedReviewData = formatData(reviewData, ['title', 'designer', 'owner', 'review_img_url', 'review_body', 'created_at', 'category', 'votes']);
     const queryStr = format(`INSERT INTO reviews
-    (title, designer, owner, review_img_url, review_body, category, created_at, votes)
+    (title, designer, owner, review_img_url, review_body, created_at, category, votes)
     VALUES
     %L
-    RETURNING *;`, reviewData.map(({title, designer, owner, review_img_url = `https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg`,
-        review_body, category, created_at = new Date(created_at), votes = 0,}) =>
-        [title, designer, owner, review_img_url, review_body, category, created_at, votes])
+    RETURNING *;`, formattedReviewData
     );
-    const result = await db.query(queryStr);
-    return result.rows;
+    return await (await db.query(queryStr)).rows
 }
 
 const insertComments = async (newCommentData) => {
-    // const formattedCommentData = formatData(newCommentData, ['body', 'votes', 'author', 'review_id']);
+    const formattedCommentData = formatData(newCommentData, ['body', 'author', 'review_id' , 'votes', 'created_at']);
     const queryStr = format(`INSERT INTO comments
     (body, author, review_id, votes, created_at)
     VALUES
     %L
-    RETURNING *;`, newCommentData.map(({ body, author, review_id, votes = 0, created_at }) => 
-    [body, author, review_id, votes, created_at,]) 
+    RETURNING *;`, formattedCommentData
     );
-    const result = await db.query(queryStr);
-    return result.rows;
+    return await (await db.query(queryStr)).rows
 }
 
 module.exports = { dropTables, createTables, insertCategories, insertUsers, insertReviews, insertComments };
-
-
-// SELECT reviews, comments

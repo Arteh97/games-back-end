@@ -1,4 +1,3 @@
-// extract any functions you are using to manipulate your data, into this file
 const createRefObj = (arr, ref1, ref2) => {
     const refObj = {};
     arr.forEach((object) => {
@@ -8,14 +7,13 @@ const createRefObj = (arr, ref1, ref2) => {
 };
 
 
-const formatData = (arrOfObjs) => {
+const formatData = (arrOfObjs, columnOrder) => {
     const copy = [...arrOfObjs];
     const result = copy.map((object) => {
-        let newArr = []
-        for (const key in object) {
-
-            newArr.push(object[key])
-        }
+        let newArr = [];
+        columnOrder.forEach((copy) => {
+            newArr.push(object[copy])
+        }) 
         return newArr;
     })
     return result;

@@ -5,9 +5,7 @@ const { dropTables, createTables, insertCategories, insertUsers, insertReviews, 
 const seed = async ({ categoryData, commentData, reviewData, userData } ) => {
   
   await dropTables();
-  // console.log('4 tables dropped');
   await createTables();
-  // console.log('All 4 tables created');
   await insertCategories(categoryData);
   await insertUsers(userData);
   
@@ -23,8 +21,7 @@ const seed = async ({ categoryData, commentData, reviewData, userData } ) => {
     newCommentData.push(copy);
   })
   await insertComments(newCommentData);
-
-
+  
 };
 
 
