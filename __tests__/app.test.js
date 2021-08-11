@@ -26,6 +26,7 @@ describe('/api and invalid path handling', () => {
             expect(msg).toEqual("Invalid Path")
         })
         });
+        
 });
 
 describe('/api/categories', () => {
@@ -83,8 +84,9 @@ describe('/api/reviews', () => {
         .get('/api/reviews')
         .expect(200)
         .then(({ body: { reviews }}) => {
-            ;expect(reviews.length).toEqual(13);
+            expect(reviews.length).toEqual(13);
             reviews.forEach((review) => {
+                expect(review).toHaveProperty("comment_count");
                 expect(review).toMatchObject({
                    title: expect.any(String),
                    designer: expect.any(String),
@@ -105,7 +107,7 @@ describe('/api/reviews', () => {
             expect(reviews).toBeSortedBy('created_at', { descending: true });
         });
         });
-        test.only('GET - status: 200, responsed with all reviews, sorted by "created_at ascending" ', () => {
+        test('GET - status: 200, responsed with all reviews, sorted by "created_at ascending" ', () => {
         return request(app)
         .get('/api/reviews?order=asc')
         .expect(200)
@@ -114,7 +116,7 @@ describe('/api/reviews', () => {
 
         });
         });
-        test.only('GET - status:  200, responds with all reviews, sorted by votes descending', () => {
+        test('GET - status:  200, responds with all reviews, sorted by votes descending', () => {
         return request(app)
         .get('/api/reviews?sort_by=votes')
         .expect(200)
@@ -122,7 +124,7 @@ describe('/api/reviews', () => {
             expect(reviews).toBeSortedBy('votes', { descending: true });
             });
             });
-        test.only('GET - status: 200, responds with all reviews, sorted by votes ascending', () => {
+        test('GET - status: 200, responds with all reviews, sorted by votes ascending', () => {
         return request(app)
         .get('/api/reviews?sort_by=votes&&order=asc')
         .expect(200)
@@ -151,32 +153,61 @@ describe('/api/reviews', () => {
             });
         });
             });
-        test.only('POST - status: 201, responds with a review after it has been posted', () => {
+        test('POST - status: 201, responds with a review after it has been posted', () => {
             return request.agent(app)
             .post('/api/reviews')
             .send({
                 title: "Nice game, will recommend to my friends",
                 designer: "Leslie Scott",
                 owner: "bainesface",
-                review_body: " I enjoyed this game very much, 10/10!",
+                review_body: "I enjoyed this game very much, 10/10!",
                 category: "euro game",
             })
             .expect(201)
             .then(({ body: { review }}) => {
-                console.log(review);
-                expect(review).toEqual({
+                expect(review[0]).toEqual({
                     review_id: 14,
                     title: "Nice game, will recommend to my friends",
                     designer: "Leslie Scott",
                     owner: "bainesface",
                     review_img_url:
-                    'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
-                    review_body: " I enjoyed this game very much, 10/10!",
+                    'https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg',
+                    review_body: "I enjoyed this game very much, 10/10!",
                     category: "euro game",
-                    created_at: expect.any(String),
+                    created_at: null,
                     votes: 0,
-                    comment_count: 0,
+                    comment_count: "0"
                 })
+            })
+        });
+        test('ERROR - status: 404,  responds with "Resource not found" if passed an owner that is not in the database', () => {
+            return request.agent(app)
+            .post('/api/reviews')
+            .send({
+                title: "Nice game, will recommend to my friends",
+                designer: "Leslie Scott",
+                owner: "non-existent",
+                review_body: "I enjoyed this game very much, 10/10!",
+                category: "euro game",
+            })
+            .expect(404)
+            .then(({ body : { msg }}) => {
+                expect(msg).toEqual("Resource not found");
+            })
+        });
+        test('ERROR - status: 404, responds with "Resource not found" if passed a category that is not in the database', () => {
+            return request.agent(app)
+            .post('/api/reviews')
+            .send({
+                title: "Nice game, will recommend to my friends",
+                designer: "Leslie Scott",
+                owner: "mallionaire",
+                review_body: "I enjoyed this game very much, 10/10!",
+                category: "incorrect",
+            })
+            .expect(404)
+            .then(({ body : { msg }}) => {
+                expect(msg).toEqual("Resource not found");
             })
         });
         test('ERROR - status 400, responds with "Invalid sort_by query" when provided a non-valid column', () => {
@@ -204,6 +235,7 @@ describe('/api/reviews/:review_id', () => {
             .get(`/api/reviews/${num}`)
             .expect(200)
             .then(({ body: { review }}) => {
+                expect(review[0]).toHaveProperty("comment_count");
                 expect(review[0]).toMatchObject({
                         review_id: 3,
                         title: 'Ultimate Werewolf',
@@ -215,7 +247,6 @@ describe('/api/reviews/:review_id', () => {
                         category: 'social deduction',
                         created_at: expect.any(String),
                         votes: 5,
-                        comment_count: expect.any(String),
                     });
                 }); 
         }); 
@@ -287,18 +318,18 @@ describe('/api/reviews/:review_id/comments', () => {
                 });
             });
         });
-        test('ERROR - status: 404, responds with "No comments found" if given a review_id that is not in the database', () => {
+        test('ERROR - status: 404, responds with "Review not found" if given a review_id that is not in the database', () => {
             return request(app)
             .get(`/api/reviews/1000/comments`)
-            .expect(400)
+            .expect(404)
             .then(({ body: { msg }}) => {
-                expect(msg).toEqual("No comments found");
+                expect(msg).toEqual("Review not found");
             });
         });
-        test('ERROR - status: 400 - should respond with "No comments found" if none found or given a review_id that isnt in the database', () => {
+        test('ERROR - status: 404 - should respond with "No comments found" if none are linked to the review_id in the query', () => {
             return request(app)
-            .get('/api/reviews/300/comments')
-            .expect(400)
+            .get('/api/reviews/4/comments')
+            .expect(404)
             .then(({ body: { msg }}) => {
                 expect(msg).toEqual("No comments found");
             })
@@ -321,7 +352,6 @@ describe('/api/reviews/:review_id/comments', () => {
             .get(`/api/reviews/${num}/comments?sort_by=votes`)
             .expect(200)
             .then(({ body: { comments }}) => {
-                // console.log(comments);
                 expect(comments).toBeSortedBy('votes', { descending: true });
             });
         });
@@ -332,6 +362,15 @@ describe('/api/reviews/:review_id/comments', () => {
             .expect(200)
             .then(({ body: { comments }}) => {
                 expect(comments).toBeSortedBy('votes', { ascending: true });
+            });
+        });
+        test('GET - status: 200, responds, with all comments associated with the given review_id, sorted by comment_id descending', () => {
+            const num = 2;
+            return request(app)
+            .get(`/api/reviews/${num}/comments?sort_by=comment_id`)
+            .expect(200)
+            .then(({ body: { comments }}) => {
+                expect(comments).toBeSortedBy('comment_id', { descending: true });
             });
         });
         test('GET - status: 200, responds, with all comments associated with the given review_id, sorted by comment_id ascending', () => {
@@ -347,16 +386,16 @@ describe('/api/reviews/:review_id/comments', () => {
             return request(app)
             .get('/api/reviews/10/comments?sort_by=address')
             .expect(400)
-            .then((error) => {
-                expect(error.body).toEqual({ msg: "Invalid sort query"});
+            .then(({ body: { msg }}) => {
+                expect(msg).toEqual("Invalid sort query");
             })
         });
         test('ERROR - status: 400, responds with "Invalid order query" if not given "asc" or "desc" ', () => {
             return request(app)
-            .get('/api/reviews/:review_id/comments?sort_by=votes&order=not-valid')
+            .get('/api/reviews/2/comments?sort_by=votes&order=ascs')
             .expect(400)
             .then(({ body: { msg }}) => {
-                expect({ body: { msg }}.body).toEqual({ msg: "Invalid order query" });
+                expect(msg).toEqual("Invalid order query");
             });
         });
         test('POST - status: 201, responds with the comment after adding it to the database', () => {
@@ -377,7 +416,7 @@ describe('/api/reviews/:review_id/comments', () => {
                 });
             });
         });
-        test('ERROR -  status: 404, responds with "Resource not found" when review_id is invalid', () => {
+        test('ERROR -  status: 404, responds with "Review not found" when review_id is invalid', () => {
             return request.agent(app)
             .post(`/api/reviews/3000/comments`)
             .send({
@@ -386,10 +425,10 @@ describe('/api/reviews/:review_id/comments', () => {
             })
             .expect(404)
             .then(({ body: { msg }}) => {
-                expect(msg).toEqual("Resource not found");
+                expect(msg).toEqual("Review not found");
             })
         });
-        test('ERROR - status: 400, responds with "Invalid input" when passed an invalid/empty body', () => {
+        test('ERROR - status: 400, responds with "Comment section is empty" when passed an invalid/empty body', () => {
             return request.agent(app)
             .post(`/api/reviews/2/comments`)
             .send({
@@ -401,7 +440,7 @@ describe('/api/reviews/:review_id/comments', () => {
                 expect(msg).toEqual("Comment section is empty");
             })
         })
-        test('ERROR - status 404, responds with "Resource not found" if given a author that does not exist ini the database ', () => {
+        test('ERROR - status 404, responds with "Resource not found" if given a author that does not exist in the database ', () => {
             return request.agent(app)
             .post(`/api/reviews/3/comments`)
             .send({
@@ -511,5 +550,3 @@ describe('/api/users', () => {
         });
     });
 })
-
-// describe('/')
