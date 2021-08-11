@@ -8,7 +8,7 @@ const createRefObj = (arr, ref1, ref2) => {
 };
 
 
-const formatData = (arrOfObjs, columnOrder) => {
+const formatData = (arrOfObjs) => {
     const copy = [...arrOfObjs];
     const result = copy.map((object) => {
         let newArr = []
@@ -22,8 +22,11 @@ const formatData = (arrOfObjs, columnOrder) => {
 }
 
 const checkSort = (sort_by, columns) => {
-    if (columns.includes(sort_by)) return sort_by;
-    else return Promise.reject({ status: 400, msg: "Invalid sort query"})
+    const sort = sort_by.toLowerCase();
+    const validSort = columns.includes(sort)
+    return validSort
+    ? sort
+    : Promise.reject({ status: 400, msg: "Invalid sort query"})
 };
 
 const checkOrder = (order) => {
@@ -34,9 +37,6 @@ const lowerCaseOrder = order.toLowerCase();
     : Promise.reject({ status: 400, msg: 'Invalid order query' });
 };
 
-// const checkExists = (item) => { // check if user, comment or review exists
-
-// }
 
 
 module.exports = { formatData, createRefObj, checkSort, checkOrder };

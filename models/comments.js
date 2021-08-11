@@ -25,11 +25,11 @@ exports.selectComments = async ( review_id, sort_by = 'created_at', order = 'des
 const validSort = await checkSort(sort_by, validColumns);
 const validOrder = await checkOrder(order);
 
-    if(!validSort) {
+    if (!validSort) {
         return Promise.reject({ status: 400, msg: "Invalid sort query"})
     };
 
-    if(!validOrder) {
+    if (!validOrder) {
         return Promise.reject({ status: 400, msg: "Invalid order query"})
     };
 
@@ -39,8 +39,9 @@ const validOrder = await checkOrder(order);
         return result.rows;
     });
 
-    if (!comments.length) return Promise.reject({ status: 400, msg: "No comments found"});
-
+    if (!comments.length) {
+        return Promise.reject({ status: 404, msg: "No comments found"});
+    }
     return comments;
 
 };

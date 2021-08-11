@@ -1,4 +1,3 @@
-
 const { addReview, selectReviewById, patchReview, selectReviews } = require('../models/reviews');
 
 
@@ -32,6 +31,6 @@ exports.postReview = async (req, res, next) => {
         selectReviewById(review_id).then((review) => {
             res.status(201).send({ review })
         })
-        .catch(next)
-    })
+        
+    }).catch(next)
 }

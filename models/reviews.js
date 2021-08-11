@@ -3,10 +3,10 @@ const { checkSort, checkOrder } = require('../utils/data-manipulation');
 
 
   exports.addReview = async ({ owner, title, review_body, designer, category }) => {
-   const added = await db.query(`INSERT INTO reviews (owner, title, review_body, designer, category)
+
+    const added = await db.query(`INSERT INTO reviews (owner, title, review_body, designer, category)
     VALUES ($1, $2, $3, $4, $5) RETURNING *;`, [owner, title, review_body, designer, category]).then((review) => {
       const { review_id } = review.rows[0];
-      console.log(review_id) 
       return review_id; 
     });
     return added;
@@ -30,6 +30,7 @@ exports.selectReviewById = async (review_id) => {
   return review;
 };
 
+
 exports.patchReview = async (review_id, inc_votes) => {
     const updated = await db.query(`UPDATE reviews SET votes = votes + $1 
     WHERE review_id = $2 RETURNING *;`, [inc_votes, review_id])
@@ -39,6 +40,7 @@ exports.patchReview = async (review_id, inc_votes) => {
 
     return updated;
 }
+
 
 exports.selectReviews = async ({ sort_by = 'created_at', order = 'desc', owner, category }) => {
 const validColumns = [
@@ -76,8 +78,6 @@ queryStr += `GROUP BY reviews.review_id ORDER BY ${validSort} ${validOrder};`;
 
 const reviews = await db.query(queryStr, queryVals)
 .then((results) => results.rows);
-
-// console.log(reviews); check if review exists (checkExists export)
 
 return reviews;
 

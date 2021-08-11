@@ -24,7 +24,7 @@ const createTables = async () => {
 
     await db.query(`CREATE TABLE reviews
     (review_id SERIAL PRIMARY KEY,
-    title VARCHAR(100) NOT NULL,
+    title VARCHAR NOT NULL,
     review_body TEXT NOT NULL,
     designer TEXT NOT NULL,
     review_img_url TEXT DEFAULT 'https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg',
