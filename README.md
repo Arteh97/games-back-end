@@ -32,10 +32,10 @@ For this project, I have set-up an API (Application-Programming-Interface, and i
         (seeds database and populates tables)
 
     3 - npm run test app 
-        (checks if endpoints are working) *optional*
+        (checks if endpoints are working) 
 
     4 - npm run test utils 
-        (checks if utils functions are working) *optional*
+        (checks if utils functions are working) 
 }
 
 
