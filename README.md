@@ -1,4 +1,4 @@
-#           Mahamud Arteh (artehs-games1997 API)
+#    (artehs-games1997 API)
 
 
 ## Project Background
