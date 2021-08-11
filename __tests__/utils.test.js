@@ -10,7 +10,6 @@ describe('formatData()', () => {
         expect(Array.isArray(formatData(input)));
     })
     test('Returns nested array of object values for single object', () => {
-        console.log
         const input = [{ slug: 'euro game', description: 'Abstact games that involve little luck' }]
         expect(formatData(input)).toEqual([['euro game', 'Abstact games that involve little luck']])
     })
