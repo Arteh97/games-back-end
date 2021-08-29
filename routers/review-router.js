@@ -1,7 +1,7 @@
 const reviewRouter = require('express').Router();
 const { getCommentsByReviewId, postComment } = require('../controllers/comments');
 const { getReviews, getReviewById, updateReview, postReview } = require('../controllers/reviews');
-const { invalidPath } = require('../error-handlng');
+const { invalidPath } = require('../errors/error-handling');
 
 
 reviewRouter.route('/')

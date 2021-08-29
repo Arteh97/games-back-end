@@ -40,6 +40,6 @@ jobs:
         uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: 40116102-5c84-4e26-84ba-ce6a3a77c2ba
-          heroku_app_name: artehs-games1997
+          heroku_app_name: artehs-games
           heroku_email: artehrush@gmail.com
 

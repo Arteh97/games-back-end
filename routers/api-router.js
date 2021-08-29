@@ -4,8 +4,8 @@ const categoryRouter =  require('./category-router');
 const reviewRouter = require('./review-router');
 const commentRouter = require('./comment-router');
 const userRouter = require('./user-router');
-const endpoints = require('../endpoints.json');
-const { invalidPath } = require('../error-handlng');
+const endpoints = require('../utils/endpoints.json');
+const { invalidPath } = require('../errors/error-handling');
 
 
 apiRouter.get('/', (req, res) => {

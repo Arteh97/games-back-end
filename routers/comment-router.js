@@ -1,6 +1,6 @@
 const { postComment, deleteComment, updateComment } = require('../controllers/comments');
 const commentRouter = require('express').Router();
-const { invalidPath } = require('../error-handlng')
+const { invalidPath } = require('../errors/error-handling')
 
 commentRouter.post('/', postComment);
 

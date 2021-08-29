@@ -1,7 +1,7 @@
 const app = require('../app');
 const request = require('supertest');
 const db = require('../db/connection.js');
-const endpoints = require('../endpoints.json');
+const endpoints = require('../utils/endpoints.json');
 const testData = require('../db/data/test-data/index.js');
 const  seed  = require('../db/seeds/seed.js');
 const { expect } = require('@jest/globals');
