@@ -23,7 +23,7 @@ jobs:
           postgresql password: "2BothamClose"
 
       - name: Install dependencies
-        run: npm i
+        run: npm ci
 
       - name: Run tests
         run: PGDATABASE=nc_games_test PGUSER=postgres PGPASSWORD=2BothamClose npm t
