@@ -20,18 +20,19 @@ jobs:
         with:
           postgresql db: "nc_games_test"
           postgresql user: "postgres"
-          postgresql password: "Ncoder97"
+          postgresql password: "2BothamClose"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm i
 
       - name: Run tests
-        run: PGDATABASE=nc_games_test PGUSER=postgres PGPASSWORD=Ncoder97 npm t
+        run: PGDATABASE=nc_games_test PGUSER=postgres PGPASSWORD=2BothamClose npm t
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
+        dontuseforce: 1
 
       - name: Deploy to Heroku
         uses: akhileshns/heroku-deploy@v3.12.12
