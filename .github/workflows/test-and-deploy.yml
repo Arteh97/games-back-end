@@ -32,10 +32,10 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
-        dontuseforce: 1
 
       - name: Deploy to Heroku
         uses: akhileshns/heroku-deploy@v3.12.12
+        dontuseforce: 1
         with:
           heroku_api_key: 40116102-5c84-4e26-84ba-ce6a3a77c2ba
           heroku_app_name: arteh97
