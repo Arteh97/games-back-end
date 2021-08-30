@@ -35,8 +35,8 @@ jobs:
 
       - name: Deploy to Heroku
         uses: akhileshns/heroku-deploy@v3.12.12
-        dontuseforce: 1
         with:
-          heroku_api_key: 40116102-5c84-4e26-84ba-ce6a3a77c2ba
+          dontuseforce: 0
+          heroku_api_key: 3ba87b3f-ea43-4c87-9363-5972d7a5685d
           heroku_app_name: arteh97
           heroku_email: artehrush@gmail.com
