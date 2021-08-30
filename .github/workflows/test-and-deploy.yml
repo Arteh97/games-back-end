@@ -26,7 +26,7 @@ jobs:
         run: npm ci
 
       - name: Run tests
-        run: PGDATABASE=nc_games PGUSER=postgres PGPASSWORD=Ncoder97 npm t
+        run: PGDATABASE=nc_games_test PGUSER=postgres PGPASSWORD=Ncoder97 npm t
   deploy:
     runs-on: ubuntu-latest
     steps:

@@ -1,4 +1,2 @@
 node_modules
-.env.test
-.env.development
 package-lock.json
