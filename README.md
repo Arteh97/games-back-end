@@ -5,8 +5,8 @@
 
 For this project, I have set-up an API (Application-Programming-Interface, and it's purpose is to mimick the transfer of information from the back-end (database) of a web-service, to the front-end (user interface). I have used MVC principles to facilitate the handling of information, and to isolate queries and endpoints. There is both a test and development database, and the purpose of the test files is to ensure the functionality of the processes that interact with both incoming queries and the DBMS (DataBase Management System), which is PostgresQL. 
 
-    ** MINIMUM Node and Postgres requirements ** 
-    [Node 7.18.1] & [Postgres 13.3]
+                       ** MINIMUM Node and Postgres requirements ** 
+                            [Node 7.18.1] & [Postgres 13.3]
 
     
 ## Installation/Cloning
